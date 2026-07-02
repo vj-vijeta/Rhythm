@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omni-Genre Synesthesia Engine Pro</title>
+    <style>
+        :root {
+            --neon: #00ffcc;
+            --neon-alert: #ff3366;
+            --bg-dark: #0a0a0c;
+            --panel-bg: #141419;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+        }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: var(--neon);
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        p.subtitle { text-align: center; color: var(--text-dim); margin-top: 0; margin-bottom: 30px;}
+        
+        .layout-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        @media (min-width: 1000px) {
+            .layout-container { grid-template-columns: 2.2fr 1fr; }
+        }
+        .dashboard, .info-panel {
+            background: var(--panel-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 20px;
+        }
+        .control-item {
+            flex: 1;
+            min-width: 160px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: bold;}
+        
+        select, button, input[type="file"]::file-selector-button {
+            background: #1c1c24;
+            color: var(--neon);
+            border: 1px solid var(--neon);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        select { color: white; border-color: #555; }
+        button:hover, input[type="file"]::file-selector-button:hover {
+            background: var(--neon);
+            color: var(--bg-dark);
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.4);
+        }
+        
+        .btn-record { border-color: var(--neon-alert); color: var(--neon-alert); }
+        .btn-record:hover { background: var(--neon-alert); color: white; box-shadow: 0 0 12px rgba(255, 51, 102, 0.4); }
+        .btn-record.recording { background: var(--neon-alert); color: white; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 51, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0); }
+        }
+
+        .checkbox-container {
+            display: flex; gap: 10px; align-items: center;
+            font-size: 0.85rem; cursor: pointer; color: #ccc;
+        }
+        .checkbox-container input { accent-color: var(--neon); transform: scale(1.2); }
+        input[type="range"] { accent-color: var(--neon); width: 100%; }
+
+        .display-wrapper {
+            position: relative; border-radius: 6px; overflow: hidden;
+            border: 1px solid #333; background: #000;
+        }
+        canvas { display: block; width: 100%; height: auto; }
+        #video { display: none; }
+        #playhead {
+            position: absolute; top: 0; left: 0; width: 6.25%; height: 100%;
+            background: rgba(0, 255, 204, 0.15); border-left: 2px solid var(--neon);
+            border-right: 2px solid var(--neon); pointer-events: none; display: none;
+        }
+
+        .info-panel h2 { color: var(--neon); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .info-panel h4 { margin: 15px 0 5px 0; color: #fff; font-size: 0.9rem;}
+        .info-panel p { font-size: 0.85rem; line-height: 1.5; color: #bbb; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { background: #222; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; color: var(--neon); border: 1px solid #444; }
+    </style>
+</head>
+<body>
+
+    <h1>Synesthesia Engine Pro</h1>
+    <p class="subtitle">Pixel Sequencer, Motion Tracker, & Polyphonic Generator</p>
+    
+    <div class="layout-container">
+        
+        <div class="dashboard">
+            <div class="control-group">
+                <div class="control-item">
+                    <label>Visual Input</label>
+                    <button id="startCamBtn">📷 Open Camera</button>
+                    <input type="file" id="imageUpload" accept="image/*" style="margin-top:5px; font-size:0.7rem;">
+                </div>
+                <div class="control-item">
+                    <label>Interaction Mode</label>
+                    <select id="modeSelect">
+                        <option value="color">Sequencer (Scan Left to Right)</option>
+                        <option value="motion">Motion Tracker (Move in Camera)</option>
+                    </select>
+                </div>
+                <div class="control-item">
+                    <label>Transport Control</label>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="playBtn" style="flex:1;">▶ PLAY</button>
+                        <button id="stopBtn" style="flex:1;">⏹ STOP</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="control-item">
+                    <label>Musical Genre</label>
+                    <select id="genreSelect">
+                        <optgroup label="Techno Variants">
+                            <option value="detroit_techno">Detroit Techno</option>
+                            <option value="acid_techno">Acid Techno</option>
+                            <option value="minimal_techno">Minimal Techno</option>
+                            <option value="industrial_techno">Industrial Techno</option>
+                            <option value="dub_techno">Dub Techno</option>
+                            <option value="hard_techno">Hard Techno / Schranz</option>
+                        </optgroup>
+                        <optgroup label="EDM & Dance">
+                            <option value="house">House</option>
+                            <option value="trance">Trance</option>
+                            <option value="dubstep">Dubstep</option>
+                            <option value="dnb">Drum & Bass (DnB)</option>
+                            <option value="trap">Trap</option>
+                            <option value="hardstyle">Hardstyle</option>
+                        </optgroup>
+                        <optgroup label="Acoustic Emulations">
+                            <option value="classical">Classical Era</option>
+                            <option value="pop">Pop</option>
+                            <option value="rock">Rock / Metal</option>
+                            <option value="hiphop">Hip Hop</option>
+                            <option value="jazz">Jazz</option>
+                            <option value="blues">Blues</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="control-item">
+                    <label>Instrument Mix (Toggle)</label>
+                    <label class="checkbox-container"><input type="checkbox" id="instLead" checked> Lead Melody (Red/Blue)</label>
+                    <label class="checkbox-container"><input type="checkbox" id="instBass" checked> Bassline (Dark Red)</label>
+                    <label class="checkbox-container"><input type="checkbox" id="instPad" checked> Atmosphere/Chords (High Blue)</label>
+                    <label class="checkbox-container"><input type="checkbox" id="instDrum" checked> Rhythm/Drums (Clocked)</label>
+                </div>
+                <div class="control-item">
+                    <label id="paramLabel">Tempo (BPM): 125</label>
+                    <input type="range" id="paramSlider" min="60" max="200" value="125">
+                </div>
+            </div>
+
+            <div class="control-group" style="border-bottom: none; padding-bottom: 0;">
+                <div class="control-item" style="flex-direction: row; align-items: center;">
+                    <button id="recordBtn" class="btn-record">🔴 Start Recording</button>
+                    <a id="downloadLink" style="display: none; color: var(--neon); text-decoration: none; font-size: 0.85rem; border: 1px solid var(--neon); padding: 10px; border-radius: 4px;">💾 Download .webm</a>
+                </div>
+            </div>
+
+            <div class="display-wrapper">
+                <video id="video" width="640" height="480" autoplay playsinline></video>
+                <canvas id="canvas" width="640" height="480"></canvas>
+                <div id="playhead"></div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h2 id="infoTitle">Detroit Techno</h2>
+            <p id="infoDesc">The original style. Soulful but mechanical.</p>
+            
+            <h4>Signature Tempo</h4>
+            <p id="infoTempo">125 BPM</p>
+
+            <h4>Mapped Instruments</h4>
+            <div class="tag-list" id="infoTags"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- GENRE CONFIGURATIONS ---
+        const genres = {
+            detroit_techno: { name: "Detroit Techno", scale: [130.81, 146.83, 164.81, 196.00, 220.00], bpm: 125, waveLead: 'sine', waveBass: 'square', distortion: 0, delay: 0, desc: "Soulful but mechanical. Uses clean synths and driving rhythms.", inst: ["TR-909 Kick", "DX7 Keys", "Saw Bass"] },
+            acid_techno: { name: "Acid Techno", scale: [146.83, 155.56, 174.61, 196.00, 220.00], bpm: 135, waveLead: 'sawtooth', waveBass: 'sawtooth', distortion: 5, delay: 0.1, Q: 15, desc: "Hypnotic and squelchy, heavily reliant on resonant filters.", inst: ["TB-303 Squelch", "Distorted Kicks", "High Resonance"] },
+            minimal_techno: { name: "Minimal Techno", scale: [65.41, 98.00, 130.81], bpm: 128, waveLead: 'sine', waveBass: 'sine', distortion: 0, delay: 0.2, desc: "Stripped-back, skeletal. Relies on silence and micro-variations.", inst: ["Sub Bass", "Clicks & Pops", "Reverb"] },
+            industrial_techno: { name: "Industrial Techno", scale: [73.42, 77.78, 87.31], bpm: 130, waveLead: 'square', waveBass: 'sawtooth', distortion: 40, delay: 0, desc: "Dark, aggressive, and noisy. Heavily overdriven.", inst: ["Overdriven Kicks", "Metallic Noise", "Harsh Leads"] },
+            dub_techno: { name: "Dub Techno", scale: [130.81, 155.56, 196.00, 233.08], bpm: 115, waveLead: 'triangle', waveBass: 'sine', distortion: 0, delay: 0.6, desc: "Spacious, atmospheric, and deep. Heavy use of echo.", inst: ["Tape Delay Chords", "Deep Sub", "Hiss/Noise"] },
+            hard_techno: { name: "Hard Techno / Schranz", scale: [82.41, 87.31, 98.00], bpm: 150, waveLead: 'sawtooth', waveBass: 'square', distortion: 50, delay: 0, desc: "Extremely fast, aggressive, and distorted.", inst: ["Gabba Kicks", "Distorted Leads", "Red-lining Percussion"] },
+            house: { name: "House", scale: [130.81, 164.81, 196.00, 246.94], bpm: 124, waveLead: 'sine', waveBass: 'triangle', distortion: 0, delay: 0, desc: "Groovy and soulful dance music with a strong 4/4 backbeat.", inst: ["M1 Piano", "Open Hi-Hats", "Groovy Bass"] },
+            trance: { name: "Trance", scale: [174.61, 196.00, 220.00, 261.63, 293.66], bpm: 138, waveLead: 'sawtooth', waveBass: 'square', distortion: 0, delay: 0.4, desc: "Emotional, melodic, and uplifting with long builds.", inst: ["Supersaw Leads", "Arpeggiators", "Heavy Reverb"] },
+            dubstep: { name: "Dubstep", scale: [73.42, 87.31, 110.00], bpm: 140, waveLead: 'sawtooth', waveBass: 'square', distortion: 30, delay: 0, Q: 10, desc: "Bass-heavy and rhythmic, usually felt in half-time.", inst: ["Wobble Bass", "Punchy Snares", "Aggressive Growls"] },
+            dnb: { name: "Drum & Bass (DnB)", scale: [82.41, 98.00, 123.47], bpm: 174, waveLead: 'sine', waveBass: 'sawtooth', distortion: 10, delay: 0, desc: "Fast breakbeats and heavy sub-bass.", inst: ["Amen Break", "Reese Bass", "Fast Hi-Hats"] },
+            trap: { name: "Trap", scale: [130.81, 138.59, 155.56, 196.00], bpm: 140, waveLead: 'triangle', waveBass: 'sine', distortion: 20, delay: 0.1, desc: "Hip-hop influenced EDM with booming bass.", inst: ["808 Sub-Bass", "Fast Hat Rolls", "Brass Stabs"] },
+            hardstyle: { name: "Hardstyle", scale: [146.83, 164.81, 174.61], bpm: 150, waveLead: 'sawtooth', waveBass: 'sawtooth', distortion: 25, delay: 0.2, desc: "Distorted, anthemic, and highly energetic.", inst: ["Gong Kicks", "Detuned Leads", "Distortion"] },
+            classical: { name: "Classical Era", scale: [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88], bpm: 90, waveLead: 'triangle', waveBass: 'sine', distortion: 0, delay: 0.5, desc: "Balanced structure, emulated via clean waveforms.", inst: ["Fortepiano (Triangle)", "Strings (Sine)", "Timpani"] },
+            pop: { name: "Pop", scale: [261.63, 293.66, 329.63, 392.00, 440.00], bpm: 118, waveLead: 'sine', waveBass: 'square', distortion: 0, delay: 0.1, desc: "Focused on catchy, bright melodies and synthetic snaps.", inst: ["Digital Synths", "Clean Bass", "Electronic Claps"] },
+            rock: { name: "Rock / Metal", scale: [164.81, 196.00, 220.00, 246.94], bpm: 140, waveLead: 'sawtooth', waveBass: 'square', distortion: 60, delay: 0, desc: "Aggressive, overdriven energy.", inst: ["Overdriven Guitar", "Electric Bass", "Heavy Drums"] },
+            hiphop: { name: "Hip Hop", scale: [130.81, 155.56, 174.61], bpm: 95, waveLead: 'triangle', waveBass: 'sine', distortion: 5, delay: 0, desc: "Boom Bap and groove-oriented beats.", inst: ["MPC Sampler Chops", "Deep 808", "Vinyl Crackle"] },
+            jazz: { name: "Jazz", scale: [130.81, 155.56, 174.61, 185.00, 196.00, 233.08], bpm: 110, waveLead: 'triangle', waveBass: 'sine', distortion: 0, delay: 0, desc: "Swing, complex chords, and walking basslines.", inst: ["Sax Emulation", "Upright Bass", "Brush Drums"] },
+            blues: { name: "Blues", scale: [164.81, 196.00, 220.00, 233.08, 246.94], bpm: 85, waveLead: 'sawtooth', waveBass: 'sine', distortion: 15, delay: 0.1, desc: "Soulful, repetitive structures based on pentatonic scales.", inst: ["Overdriven Lead", "Walking Bass", "Acoustic Kick"] }
+        };
+
+        // --- GLOBAL VARIABLES ---
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const playhead = document.getElementById('playhead');
+        const paramSlider = document.getElementById('paramSlider');
+        const paramLabel = document.getElementById('paramLabel');
+        const modeSelect = document.getElementById('modeSelect');
+        const genreSelect = document.getElementById('genreSelect');
+        
+        let audioCtx, masterOut, mediaDest, recorder, recordedChunks = [];
+        let isPlaying = false;
+        let isRecording = false;
+        let step = 0;
+        const totalSteps = 16;
+        let mainLoopTimeout;
+        let useCamera = false;
+        let lastFrameData = null;
+
+        // UI Init
+        ctx.fillStyle = '#141419'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ffcc'; ctx.font = '16px monospace'; ctx.textAlign = 'center';
+        ctx.fillText('UPLOAD IMAGE OR START CAMERA TO BEGIN', canvas.width / 2, canvas.height / 2);
+
+        function updateUI() {
+            const g = genres[genreSelect.value];
+            if (modeSelect.value === 'color') {
+                paramSlider.min = 60; paramSlider.max = 200;
+                paramSlider.value = g.bpm; paramLabel.innerText = `Tempo (BPM): ${g.bpm}`;
+            }
+            document.getElementById('infoTitle').innerText = g.name;
+            document.getElementById('infoDesc').innerText = g.desc;
+            document.getElementById('infoTempo').innerText = `~${g.bpm} BPM`;
+            
+            const tags = document.getElementById('infoTags');
+            tags.innerHTML = '';
+            g.inst.forEach(i => {
+                const s = document.createElement('span');
+                s.className = 'tag'; s.innerText = i; tags.appendChild(s);
+            });
+        }
+        
+        genreSelect.addEventListener('change', updateUI);
+        modeSelect.addEventListener('change', () => {
+            if (modeSelect.value === 'motion') {
+                paramLabel.innerText = "Motion Sensitivity (Lower is more sensitive): 30";
+                paramSlider.min = 5; paramSlider.max = 100; paramSlider.value = 30;
+                playhead.style.display = 'none';
+            } else { updateUI(); }
+        });
+        paramSlider.addEventListener('input', (e) => {
+            paramLabel.innerText = modeSelect.value === 'motion' ? `Motion Sensitivity: ${e.target.value}` : `Tempo (BPM): ${e.target.value}`;
+        });
+        updateUI();
+
+        // --- CAMERA & FILE LOGIC ---
+        document.getElementById('startCamBtn').addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                video.srcObject = stream;
+                useCamera = true;
+                function syncFrame() {
+                    if (useCamera && video.readyState === video.HAVE_ENOUGH_DATA) {
+                        if (modeSelect.value === 'motion' && isPlaying) processMotion();
+                        else ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    }
+                    requestAnimationFrame(syncFrame);
+                }
+                syncFrame();
+            } catch (err) { alert("Camera access denied or unavailable."); }
+        });
+
+        document.getElementById('imageUpload').addEventListener('change', (e) => {
+            useCamera = false;
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // --- AUDIO ENGINE ---
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterOut = audioCtx.createGain();
+                masterOut.gain.value = 0.8;
+                masterOut.connect(audioCtx.destination);
+                
+                // For recording output
+                mediaDest = audioCtx.createMediaStreamDestination();
+                masterOut.connect(mediaDest);
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function makeDistCurve(amount) {
+            const k = typeof amount === 'number' ? amount : 50, n_samples = 44100, curve = new Float32Array(n_samples), deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) { let x = i * 2 / n_samples - 1; curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x)); }
+            return curve;
+        }
+
+        function playDrumLayer(time, gType) {
+            if (!document.getElementById('instDrum').checked) return;
+            
+            // Basic Kick Drum
+            const kickOsc = audioCtx.createOscillator();
+            const kickEnv = audioCtx.createGain();
+            kickOsc.type = 'sine';
+            
+            // Tailor kick to genre
+            if(gType === 'hard_techno' || gType === 'industrial_techno') {
+                kickOsc.frequency.setValueAtTime(200, time);
+                kickOsc.frequency.exponentialRampToValueAtTime(0.01, time + 0.3);
+                kickOsc.type = 'square'; // harsher
+            } else if (gType === 'trap' || gType === 'hiphop') {
+                kickOsc.frequency.setValueAtTime(100, time);
+                kickOsc.frequency.exponentialRampToValueAtTime(20, time + 0.8); // Long 808
+            } else {
+                kickOsc.frequency.setValueAtTime(150, time);
+                kickOsc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
+            }
+
+            kickEnv.gain.setValueAtTime(1, time);
+            kickEnv.gain.exponentialRampToValueAtTime(0.001, time + (gType === 'trap' ? 0.8 : 0.5));
+            
+            kickOsc.connect(kickEnv);
+            kickEnv.connect(masterOut);
+            kickOsc.start(time);
+            kickOsc.stop(time + 0.9);
+
+            // Basic Hi-Hat (White Noise)
+            if (step % 2 !== 0) { // Offbeats
+                const bufferSize = audioCtx.sampleRate * 0.1; 
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                
+                const noiseSource = audioCtx.createBufferSource();
+                noiseSource.buffer = buffer;
+                const noiseFilter = audioCtx.createBiquadFilter();
+                noiseFilter.type = 'highpass';
+                noiseFilter.frequency.value = 7000;
+                
+                const noiseEnv = audioCtx.createGain();
+                noiseEnv.gain.setValueAtTime(0.3, time);
+                noiseEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+
+                noiseSource.connect(noiseFilter);
+                noiseFilter.connect(noiseEnv);
+                noiseEnv.connect(masterOut);
+                noiseSource.start(time);
+            }
+        }
+
+        function triggerSynth(r, g, b, isMotionMode = false) {
+            const activeG = genres[genreSelect.value];
+            const time = audioCtx.currentTime;
+            const noteIdx = Math.floor((r / 255) * activeG.scale.length);
+            let freq = activeG.scale[Math.min(noteIdx, activeG.scale.length - 1)];
+            
+            // Global FX
+            const routeGain = audioCtx.createGain(); routeGain.gain.value = 0.5;
+            const dist = audioCtx.createWaveShaper(); dist.curve = makeDistCurve(activeG.distortion);
+            const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(400 + (g * 10), time);
+            
+            filter.connect(dist); dist.connect(routeGain); routeGain.connect(masterOut);
+
+            // 1. LEAD LAYER
+            if (document.getElementById('instLead').checked && (b > 50 || isMotionMode)) {
+                const osc = audioCtx.createOscillator();
+                const env = audioCtx.createGain();
+                osc.type = activeG.waveLead;
+                osc.frequency.setValueAtTime(freq * (b > 150 ? 2 : 1), time); 
+                
+                env.gain.setValueAtTime(0, time);
+                env.gain.linearRampToValueAtTime((g/255)*0.8 || 0.5, time + 0.05);
+                env.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+                
+                osc.connect(env); env.connect(filter);
+                osc.start(time); osc.stop(time + 0.35);
+            }
+
+            // 2. BASS LAYER
+            if (document.getElementById('instBass').checked && (r < 150 || isMotionMode)) {
+                const sub = audioCtx.createOscillator();
+                const subEnv = audioCtx.createGain();
+                sub.type = activeG.waveBass;
+                sub.frequency.setValueAtTime(freq / 2, time);
+                
+                subEnv.gain.setValueAtTime(0, time);
+                subEnv.gain.linearRampToValueAtTime(0.7, time + 0.02);
+                subEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+
+                sub.connect(subEnv); subEnv.connect(dist);
+                sub.start(time); sub.stop(time + 0.35);
+            }
+
+            // 3. PAD/CHORD LAYER
+            if (document.getElementById('instPad').checked && b > 120) {
+                const pad = audioCtx.createOscillator();
+                const padEnv = audioCtx.createGain();
+                pad.type = 'sine';
+                pad.frequency.setValueAtTime(freq * 1.5, time);
+                
+                padEnv.gain.setValueAtTime(0, time);
+                padEnv.gain.linearRampToValueAtTime(0.3, time + 0.5);
+                padEnv.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
+
+                pad.connect(padEnv); padEnv.connect(masterOut);
+                pad.start(time); pad.stop(time + 1.6);
+            }
+        }
+
+        // --- IMPROVED MOTION SENSOR ---
+        function processMotion() {
+            const tCanvas = document.createElement('canvas');
+            tCanvas.width = canvas.width; tCanvas.height = canvas.height;
+            const tCtx = tCanvas.getContext('2d');
+            tCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const curFrame = tCtx.getImageData(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            if (lastFrameData) {
+                const stepW = canvas.width / totalSteps;
+                const sensitivity = parseInt(paramSlider.value); // Lower is more sensitive (5 to 100)
+                let colMotion = new Array(totalSteps).fill(0);
+
+                // Sample in a sparse grid
+                for (let y = 40; y < canvas.height - 40; y += 20) {
+                    for (let x = 0; x < canvas.width; x += 20) {
+                        const i = (y * canvas.width + x) * 4;
+                        // Calculate luminosity difference (more robust than raw RGB diffs)
+                        const luma1 = (curFrame.data[i]*0.299 + curFrame.data[i+1]*0.587 + curFrame.data[i+2]*0.114);
+                        const luma2 = (lastFrameData.data[i]*0.299 + lastFrameData.data[i+1]*0.587 + lastFrameData.data[i+2]*0.114);
+                        
+                        if (Math.abs(luma1 - luma2) > sensitivity) {
+                            colMotion[Math.floor(x / stepW)]++;
+                            // Visual Feedback for Motion Detection
+                            ctx.fillStyle = "rgba(255, 51, 102, 0.5)";
+                            ctx.fillRect(x, y, 10, 10);
+                        }
+                    }
+                }
+
+                for (let c = 0; c < totalSteps; c++) {
+                    // If enough pixels in this column shifted, trigger sound
+                    if (colMotion[c] > 3) {
+                        const midX = Math.floor((c * stepW) + (stepW / 2));
+                        const pix = ctx.getImageData(midX, canvas.height / 2, 1, 1).data;
+                        ctx.fillStyle = "rgba(0, 255, 204, 0.2)";
+                        ctx.fillRect(c * stepW, 0, stepW, canvas.height);
+                        
+                        triggerSynth(pix[0], pix[1], pix[2], true);
+                    }
+                }
+            }
+            lastFrameData = curFrame;
+        }
+
+        // --- SEQUENCER ---
+        function sequencerTick() {
+            if (!isPlaying) return;
+            
+            const gType = genreSelect.value;
+            
+            if (modeSelect.value === 'color') {
+                playhead.style.display = 'block';
+                const stepW = canvas.width / totalSteps;
+                const x = step * stepW;
+                playhead.style.left = `${(x / canvas.width) * 100}%`;
+
+                const pix = ctx.getImageData(x + (stepW / 2), canvas.height / 2, 1, 1).data;
+                
+                if (step % 4 === 0 || step % 4 === 2) {
+                    playDrumLayer(audioCtx.currentTime, gType);
+                }
+
+                if (pix[3] > 0 && (pix[0] + pix[1] + pix[2]) > 20) {
+                    triggerSynth(pix[0], pix[1], pix[2]);
+                }
+
+                step = (step + 1) % totalSteps;
+                const ms = (60000 / parseInt(paramSlider.value)) / 4; 
+                mainLoopTimeout = setTimeout(sequencerTick, ms);
+            } else {
+                // In motion mode, pulse the drum track occasionally to keep a beat
+                if(step % 16 === 0) playDrumLayer(audioCtx.currentTime, gType);
+                step = (step + 1) % 64;
+                mainLoopTimeout = setTimeout(sequencerTick, 60); 
+            }
+        }
+
+        // --- RECORDING LOGIC ---
+        document.getElementById('recordBtn').addEventListener('click', () => {
+            if (!isRecording) {
+                initAudio();
+                const canvasStream = canvas.captureStream(30);
+                // Combine audio and canvas video tracks
+                const combinedStream = new MediaStream([...canvasStream.getTracks(), ...mediaDest.stream.getTracks()]);
+                
+                recorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
+                recordedChunks = [];
+                
+                recorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+                recorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.getElementById('downloadLink');
+                    link.href = url;
+                    link.download = `Synesthesia_Session_${Date.now()}.webm`;
+                    link.style.display = 'inline-block';
+                };
+
+                recorder.start();
+                isRecording = true;
+                document.getElementById('recordBtn').innerText = "⏹ Stop Recording";
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('downloadLink').style.display = 'none';
+            } else {
+                recorder.stop();
+                isRecording = false;
+                document.getElementById('recordBtn').innerText = "🔴 Start Recording";
+                document.getElementById('recordBtn').classList.remove('recording');
+            }
+        });
+
+        // --- TRANSPORT ---
+        document.getElementById('playBtn').addEventListener('click', () => {
+            initAudio();
+            if (!isPlaying) { isPlaying = true; step = 0; sequencerTick(); }
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            isPlaying = false; clearTimeout(mainLoopTimeout);
+            playhead.style.display = 'none'; lastFrameData = null;
+        });
+
+    </script>
+</body>
+</html>
