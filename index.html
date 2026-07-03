@@ -195,6 +195,13 @@
             width: 100%;
             background: transparent;
             margin: 8px 0;
+            transition: opacity 0.2s;
+        }
+
+        input[type="range"].ai-controlled {
+            opacity: 0.6;
+            pointer-events: none;
+            /* Prevents user from fighting the AI */
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -450,6 +457,43 @@
             transition: width 0.1s linear;
         }
 
+        /* 7 BAND EQ STYLES */
+        .eq-container {
+            display: flex;
+            gap: 15px;
+            background: #1a1a24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #333;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+        .eq-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            min-width: 40px;
+        }
+
+        .eq-band label {
+            font-size: 0.65rem;
+            color: #ccc;
+        }
+
+        .eq-band input[type="range"] {
+            writing-mode: bt-lr;
+            /* IE */
+            -webkit-appearance: slider-vertical;
+            /* WebKit */
+            width: 8px;
+            height: 100px;
+            padding: 0 5px;
+        }
+
         #toast {
             position: fixed;
             bottom: 20px;
@@ -492,8 +536,14 @@
 
     <div class="header-bar" style="border:none; margin-bottom: 0; padding-bottom: 0;">
         <h1>Synesthesia Studio v11</h1>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
             <button id="masterClearBtn" class="btn-danger">☢️ MASTER RESET</button>
+            <button id="saveSetupBtn" class="btn-secondary">💾 SAVE PROJECT</button>
+            <label class="btn-secondary"
+                style="cursor:pointer; display:inline-block; border-radius:4px; padding:8px 12px; font-weight:bold; border: 1px solid var(--neon-secondary); color: var(--neon-secondary);">
+                📂 LOAD PROJECT
+                <input type="file" id="loadSetupUpload" accept=".json" style="display:none;">
+            </label>
             <button id="recordBtn" class="btn-record">🔴 Record</button>
             <a id="downloadLink"
                 style="display:none; color: var(--neon); font-size:0.8rem; text-decoration: underline;">Save .webm</a>
@@ -535,6 +585,10 @@
                 <div class="display-wrapper" id="seq-wrapper">
                     <canvas id="seq-canvas" height="400" width="800"></canvas>
                     <div id="playhead-seq" class="playhead"></div>
+                </div>
+
+                <label style="display:block; margin-top:15px; margin-bottom:5px;">Rearrange Sequence</label>
+                <div id="thumb-container" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;">
                 </div>
             </div>
 
@@ -597,6 +651,25 @@
             </div>
 
             <div style="background: #1a1a24; padding: 15px; border-radius: 6px; border: 1px solid #333;">
+
+                <div class="eq-container">
+                    <div style="color:var(--neon); font-size:0.8rem; font-weight:bold; width: 80px; text-align:center;">
+                        MASTER EQ</div>
+                    <div class="eq-band"><label>60Hz</label><input type="range" class="eq-slider" data-idx="0" min="-15"
+                            max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>150Hz</label><input type="range" class="eq-slider" data-idx="1"
+                            min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>400Hz</label><input type="range" class="eq-slider" data-idx="2"
+                            min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>1kHz</label><input type="range" class="eq-slider" data-idx="3" min="-15"
+                            max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>2.5kHz</label><input type="range" class="eq-slider" data-idx="4"
+                            min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>6kHz</label><input type="range" class="eq-slider" data-idx="5" min="-15"
+                            max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>15kHz</label><input type="range" class="eq-slider" data-idx="6"
+                            min="-15" max="15" step="0.5" value="0"></div>
+                </div>
 
                 <div class="mixer-group" style="margin-bottom: 15px;">
                     <label class="mixer-label ai-director"
@@ -770,28 +843,28 @@
 
         const instBase = {
             electronic: {
-                lead: { name: "Lead", model: "synth_saw", att: 0.05, rel: 0.4, cut: 3000, rev: 0.4, del: 0.2 },
-                arp: { name: "Arp", model: "acid_squelch", att: 0.01, rel: 0.2, cut: 4000, rev: 0.3, del: 0.4 },
-                chords: { name: "Stabs", model: "synth_saw", att: 0.02, rel: 0.3, cut: 2000, rev: 0.3, del: 0.1 },
-                pad: { name: "Pad", model: "synth_sine", att: 1.0, rel: 1.5, cut: 1000, rev: 0.8, del: 0.5 },
-                bass: { name: "Bass", model: "synth_saw", att: 0.02, rel: 0.3, cut: 800, rev: 0, del: 0 },
-                sub: { name: "Sub", model: "sub_bass", att: 0.1, rel: 0.6, cut: 300, rev: 0, del: 0 }
+                lead: { name: "Lead", model: "synth_saw", att: 0.05, rel: 0.4, cut: 3000, rev: 0.4, del: 0.2, vol: 1.0 },
+                arp: { name: "Arp", model: "acid_squelch", att: 0.01, rel: 0.2, cut: 4000, rev: 0.3, del: 0.4, vol: 1.0 },
+                chords: { name: "Stabs", model: "synth_saw", att: 0.02, rel: 0.3, cut: 2000, rev: 0.3, del: 0.1, vol: 1.0 },
+                pad: { name: "Pad", model: "synth_sine", att: 1.0, rel: 1.5, cut: 1000, rev: 0.8, del: 0.5, vol: 1.0 },
+                bass: { name: "Bass", model: "synth_saw", att: 0.02, rel: 0.3, cut: 800, rev: 0, del: 0, vol: 1.0 },
+                sub: { name: "Sub", model: "sub_bass", att: 0.1, rel: 0.6, cut: 300, rev: 0, del: 0, vol: 1.0 }
             },
             acoustic: {
-                lead: { name: "Piano/Lead", model: "acoustic_piano", att: 0.02, rel: 1.0, cut: 2500, rev: 0.4, del: 0.1 },
-                arp: { name: "Pluck/Pick", model: "plucked_string", att: 0.01, rel: 0.3, cut: 3000, rev: 0.3, del: 0.2 },
-                chords: { name: "Brass/Chords", model: "brass", att: 0.05, rel: 0.4, cut: 2000, rev: 0.3, del: 0.1 },
-                pad: { name: "Strings/Pad", model: "synth_sine", att: 1.0, rel: 1.5, cut: 1500, rev: 0.6, del: 0.3 },
-                bass: { name: "Elec Bass", model: "plucked_string", att: 0.02, rel: 0.4, cut: 1000, rev: 0, del: 0 },
-                sub: { name: "Upright Sub", model: "sub_bass", att: 0.1, rel: 0.8, cut: 400, rev: 0, del: 0 }
+                lead: { name: "Piano/Lead", model: "acoustic_piano", att: 0.02, rel: 1.0, cut: 2500, rev: 0.4, del: 0.1, vol: 1.0 },
+                arp: { name: "Pluck/Pick", model: "plucked_string", att: 0.01, rel: 0.3, cut: 3000, rev: 0.3, del: 0.2, vol: 1.0 },
+                chords: { name: "Brass/Chords", model: "brass", att: 0.05, rel: 0.4, cut: 2000, rev: 0.3, del: 0.1, vol: 1.0 },
+                pad: { name: "Strings/Pad", model: "synth_sine", att: 1.0, rel: 1.5, cut: 1500, rev: 0.6, del: 0.3, vol: 1.0 },
+                bass: { name: "Elec Bass", model: "plucked_string", att: 0.02, rel: 0.4, cut: 1000, rev: 0, del: 0, vol: 1.0 },
+                sub: { name: "Upright Sub", model: "sub_bass", att: 0.1, rel: 0.8, cut: 400, rev: 0, del: 0, vol: 1.0 }
             },
             heavy: {
-                lead: { name: "Lead Guitar", model: "distorted_guitar", att: 0.05, rel: 0.5, cut: 4000, rev: 0.4, del: 0.3 },
-                arp: { name: "Picked Riff", model: "distorted_guitar", att: 0.01, rel: 0.2, cut: 3000, rev: 0.2, del: 0.1 },
-                chords: { name: "Power Chords", model: "distorted_guitar", att: 0.1, rel: 1.0, cut: 3000, rev: 0.2, del: 0.1 },
-                pad: { name: "Feedback", model: "synth_saw", att: 1.0, rel: 2.0, cut: 1500, rev: 0.8, del: 0.6 },
-                bass: { name: "Picked Bass", model: "plucked_string", att: 0.02, rel: 0.4, cut: 1200, rev: 0.1, del: 0 },
-                sub: { name: "Dist Sub", model: "synth_saw", att: 0.1, rel: 0.8, cut: 500, rev: 0.1, del: 0 }
+                lead: { name: "Lead Guitar", model: "distorted_guitar", att: 0.05, rel: 0.5, cut: 4000, rev: 0.4, del: 0.3, vol: 1.0 },
+                arp: { name: "Picked Riff", model: "distorted_guitar", att: 0.01, rel: 0.2, cut: 3000, rev: 0.2, del: 0.1, vol: 1.0 },
+                chords: { name: "Power Chords", model: "distorted_guitar", att: 0.1, rel: 1.0, cut: 3000, rev: 0.2, del: 0.1, vol: 1.0 },
+                pad: { name: "Feedback", model: "synth_saw", att: 1.0, rel: 2.0, cut: 1500, rev: 0.8, del: 0.6, vol: 1.0 },
+                bass: { name: "Picked Bass", model: "plucked_string", att: 0.02, rel: 0.4, cut: 1200, rev: 0.1, del: 0, vol: 1.0 },
+                sub: { name: "Dist Sub", model: "synth_saw", att: 0.1, rel: 0.8, cut: 500, rev: 0.1, del: 0, vol: 1.0 }
             }
         };
 
@@ -853,7 +926,7 @@
             cinematic: { name: "Cinematic Score", desc: "Modern film music.", bpm: 80, scale: scales.minor, progression: [0, 5, -2, -1], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } }
         };
 
-        // MULTI-LAYER TRANSFORMATION (Transforms singular instrument objects into an Array of layers)
+        // MULTI-LAYER TRANSFORMATION
         Object.values(genres).forEach(g => {
             Object.keys(g.instruments).forEach(k => {
                 g.instruments[k] = [g.instruments[k]];
@@ -888,6 +961,10 @@
         let motionCooldowns = [0, 0, 0, 0, 0, 0];
         let currentTab = 'tab-image';
 
+        // MASTER EQ STATE
+        let eqFilters = [];
+        const eqBands7 = [60, 150, 400, 1000, 2500, 6000, 15000];
+
         // CANVAS ENGINES
         const seqCanvas = document.getElementById('seq-canvas'); const seqCtx = seqCanvas.getContext('2d', { willReadFrequently: true });
         const camCanvas = document.getElementById('cam-canvas'); const camCtx = camCanvas.getContext('2d', { willReadFrequently: true });
@@ -905,7 +982,7 @@
 
         // --- TAB & UI LOGIC ---
         function switchTab(tabId) {
-            // FIX 5: Gracefully stop screen recording before switching tabs
+            // Gracefully stop screen recording before switching tabs
             if (isRecording && currentTab !== tabId) {
                 document.getElementById('recordBtn').click();
                 showToast("Recording auto-stopped to safely switch tabs.");
@@ -968,6 +1045,7 @@
                                 <option value="sub_bass" ${layer.model === 'sub_bass' ? 'selected' : ''}>Deep Sub</option>
                             </select>
                         </div>
+                        <div class="control-item"><label>Vol <span class="value-display">${(layer.vol !== undefined ? layer.vol : 1.0).toFixed(2)}</span></label><input type="range" class="${UI.aiDir.checked ? 'ai-controlled' : ''}" min="0" max="2.0" step="0.05" value="${layer.vol !== undefined ? layer.vol : 1.0}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'vol', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
                         <div class="control-item"><label>Att <span class="value-display">${layer.att.toFixed(2)}</span></label><input type="range" min="0.01" max="2.0" step="0.01" value="${layer.att}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'att', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
                         <div class="control-item"><label>Rel <span class="value-display">${layer.rel.toFixed(2)}</span></label><input type="range" min="0.1" max="4.0" step="0.1" value="${layer.rel}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'rel', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
                         <div class="control-item"><label>Cut <span class="value-display">${layer.cut}</span></label><input type="range" min="100" max="10000" step="100" value="${layer.cut}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'cut', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
@@ -988,7 +1066,7 @@
             renderLayers();
         };
 
-        // NEW STACKING FEATURE: Mix any base instrument into your active stack!
+        // STACKING FEATURE
         document.getElementById('addLayerBtn').addEventListener('click', () => {
             const targetStack = UI.instSel.value;
             const baseType = document.getElementById('stackBaseSelect').value;
@@ -1004,6 +1082,20 @@
             instLayers.push(clone);
             renderLayers();
             showToast(`Added a [${baseType.toUpperCase()}] layer to your ${targetStack.toUpperCase()} stack!`);
+        });
+
+        // AI CHECKBOX TOGGLE - Handle UI lockouts
+        UI.aiDir.addEventListener('change', () => {
+            const sliders = document.querySelectorAll('.eq-slider, #bpmSlider');
+            if (UI.aiDir.checked) {
+                sliders.forEach(s => s.classList.add('ai-controlled'));
+            } else {
+                sliders.forEach(s => s.classList.remove('ai-controlled'));
+                // Snap BPM back to genre base when disabled
+                UI.bpm.value = genres[UI.genreSel.value].bpm;
+                document.getElementById('bpmVal').innerText = UI.bpm.value;
+            }
+            renderLayers(); // re-render to apply lock to layer volumes
         });
 
         function loadGenre() {
@@ -1024,13 +1116,19 @@
                     stackSel.appendChild(opt2);
                 }
             });
+
+            // Re-apply AI locks on load
+            if (UI.aiDir.checked) document.getElementById('bpmSlider').classList.add('ai-controlled');
+
             renderLayers(); loadRhythmToUI();
             melodyPos = Math.floor(g.scale.length / 2); globalStep = 0;
         }
 
         UI.genreSel.addEventListener('change', loadGenre);
         UI.instSel.addEventListener('change', renderLayers);
-        UI.bpm.addEventListener('input', (e) => document.getElementById('bpmVal').innerText = e.target.value);
+        UI.bpm.addEventListener('input', (e) => {
+            if (!UI.aiDir.checked) document.getElementById('bpmVal').innerText = e.target.value;
+        });
 
         buildRhythmGrid(); loadGenre();
 
@@ -1051,12 +1149,42 @@
                 compressor.threshold.value = -12; compressor.ratio.value = 4; compressor.attack.value = 0.003;
                 masterGain = ctx.createGain(); masterGain.gain.value = 0.5;
                 masterReverb = ctx.createConvolver(); masterReverb.buffer = createReverbBuffer(2.5, 2.0);
-                masterGain.connect(compressor); compressor.connect(ctx.destination); masterReverb.connect(compressor);
+
+                // 7 Band EQ Routing
+                let prevNode = masterGain;
+                eqBands7.forEach((freq, i) => {
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = (i === 0) ? 'lowshelf' : (i === 6) ? 'highshelf' : 'peaking';
+                    filter.frequency.value = freq;
+                    const sliderVal = document.querySelector(`.eq-slider[data-idx="${i}"]`).value;
+                    filter.gain.value = parseFloat(sliderVal);
+
+                    prevNode.connect(filter);
+                    prevNode = filter;
+                    eqFilters.push(filter);
+                });
+
+                prevNode.connect(compressor);
+                masterReverb.connect(compressor);
+                compressor.connect(ctx.destination);
+
                 mediaDest = ctx.createMediaStreamDestination();
-                masterGain.connect(mediaDest); masterReverb.connect(mediaDest);
+                prevNode.connect(mediaDest); masterReverb.connect(mediaDest);
             }
             if (ctx.state === 'suspended') ctx.resume();
         }
+
+        // Tie EQ Sliders to Audio Nodes (Manual control)
+        document.querySelectorAll('.eq-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                if (!UI.aiDir.checked) {
+                    const idx = e.target.dataset.idx;
+                    if (eqFilters[idx]) {
+                        eqFilters[idx].gain.value = parseFloat(e.target.value);
+                    }
+                }
+            });
+        });
 
         function makeDistCurve(amount) {
             if (amount === 0) return new Float32Array([0, 0]);
@@ -1097,39 +1225,37 @@
         }
 
         function playLayer(freq, time, rawConfig, layerIndex = 0) {
-            // Clone config to prevent permanent mutation when AI is running
             const config = JSON.parse(JSON.stringify(rawConfig));
 
             const vEnv = ctx.createGain(); const vFilt = ctx.createBiquadFilter(); const vRevSend = ctx.createGain();
             vFilt.type = 'lowpass';
 
-            // AI DIRECTOR: MACRO MODULATION OF ALL A.R.C.R.D PARAMETERS
+            let activeVol = config.vol !== undefined ? config.vol : 1.0;
+
             if (UI.aiDir.checked) {
-                // Modulate Cutoff (Open up during tension build)
                 config.cut = Math.max(500, config.cut + (macroFilterMod * (layerIndex === 0 ? 2000 : 4000)));
-
-                // Modulate Delay (Increase feedback towards the end of the 16 bars)
                 if (layerIndex > 0) config.del = Math.min(0.9, config.del + (macroFilterMod * 0.4));
-
-                // Modulate Attack/Release slightly to make sounds "breathe" over time
                 config.att = Math.max(0.01, config.att * (1 + (Math.sin(ctx.currentTime * 0.5) * 0.2)));
+
+                // NEW: AI Volume Control (Breathing effect & Tension boost)
+                activeVol = activeVol * (0.8 + 0.3 * Math.sin(ctx.currentTime * (layerIndex + 1.5))) + (macroFilterMod * 0.2);
+                activeVol = Math.max(0, Math.min(2.0, activeVol)); // clamp safe levels
             }
 
             vFilt.frequency.setValueAtTime(config.cut, time);
             vRevSend.gain.value = config.rev;
 
             vEnv.gain.setValueAtTime(0, time);
-            vEnv.gain.linearRampToValueAtTime(0.6 / (layerIndex + 1), time + config.att);
+            vEnv.gain.linearRampToValueAtTime((0.6 / (layerIndex + 1)) * activeVol, time + config.att);
             vEnv.gain.exponentialRampToValueAtTime(0.001, time + config.att + config.rel);
 
             vFilt.connect(vEnv); vEnv.connect(masterGain); vEnv.connect(vRevSend); vRevSend.connect(masterReverb);
 
-            // Delay Network
             if (config.del > 0.01) {
                 const delayNode = ctx.createDelay(5.0);
                 delayNode.delayTime.value = (60 / UI.bpm.value) * 0.75; // Dotted 8th delay
                 const feedback = ctx.createGain();
-                feedback.gain.value = 0.4 + (UI.aiDir.checked ? macroFilterMod * 0.3 : 0); // AI pushes delay feedback up
+                feedback.gain.value = 0.4 + (UI.aiDir.checked ? macroFilterMod * 0.3 : 0);
                 const delayWet = ctx.createGain();
                 delayWet.gain.value = config.del;
 
@@ -1224,9 +1350,9 @@
             const curFrame = camCtx.getImageData(0, 0, camCanvas.width, camCanvas.height);
             const time = ctx.currentTime;
             if (lastFrameData) {
-                const sensitivity = 70; // Increased to prevent glitching on small shadows
+                const sensitivity = 70;
                 const gData = genres[UI.genreSel.value];
-                const DEBOUNCE = 0.5; // Strictly increased cooldown to prevent glitchy audio overlap
+                const DEBOUNCE = 0.5;
 
                 for (let y = 30; y < camCanvas.height - 30; y += 40) {
                     for (let x = 0; x < camCanvas.width; x += 40) {
@@ -1257,53 +1383,68 @@
             const time = ctx.currentTime; const gData = genres[UI.genreSel.value];
             const activeEnv = getActiveCanvas();
 
-            // FORMULA OF 4 ARCHITECTURE: 
-            // We now track 16-bar blocks (256 steps) instead of just 8 bars.
             let step16 = globalStep % 16;
             currentBar = Math.floor((globalStep % 256) / 16) + 1;
+            let isTurnaround = false;
 
-            // SLOW IMAGE SCROLL:
             const STEPS_PER_IMAGE = 128;
             const totalStepsInCanvas = Math.max(16, (activeEnv.c.width / 800) * STEPS_PER_IMAGE);
             const stepIndex = globalStep % totalStepsInCanvas;
 
             if (UI.aiDir.checked) {
-                // FIX 3: Turnarounds trigger exactly on the last 2 beats (steps 8-15 of the bar)
-                let isTurnaround = (currentBar % 4 === 0) && step16 >= 8;
-
-                // Progression logic based on the 16-bar block
+                isTurnaround = (currentBar % 4 === 0) && step16 >= 8;
                 let progIdx = Math.floor((currentBar - 1) / 4);
                 if (gData.progression) chordOffset = gData.progression[progIdx % gData.progression.length];
 
                 if (isTurnaround) {
-                    // Turnaround drop
                     Mixer.drums.checked = false; Mixer.sub.checked = false; Mixer.bass.checked = false;
                 } else {
                     Mixer.drums.checked = true; Mixer.sub.checked = true;
-                    // Evolve orchestration systematically over 16 bars
                     if (currentBar <= 4) { Mixer.bass.checked = true; Mixer.pad.checked = true; Mixer.lead.checked = false; Mixer.arp.checked = false; }
                     else if (currentBar <= 8) { Mixer.arp.checked = true; Mixer.lead.checked = false; }
                     else if (currentBar <= 12) { Mixer.lead.checked = true; Mixer.chords.checked = true; }
                     else { Mixer.lead.checked = true; Mixer.pad.checked = false; }
 
-                    // AUTOMATIC INSTUMENT STACKING: Add a layer dynamically on Bar 9 to build peak energy
                     if (currentBar === 9 && step16 === 0 && Math.random() > 0.5) {
                         let targets = ['lead', 'arp', 'chords'];
                         let target = targets[Math.floor(Math.random() * targets.length)];
-                        // Limit to max 3 layers to prevent audio engine blowout
                         if (gData.instruments[target] && gData.instruments[target].length < 3) {
                             let clone = JSON.parse(JSON.stringify(gData.instruments[target][0]));
-                            clone.del = Math.min(0.9, clone.del + 0.3); // Heavy delay on the AI layer
+                            clone.del = Math.min(0.9, clone.del + 0.3);
                             clone.cut = 4000;
-                            clone.model = (Math.random() > 0.5) ? 'supersaw' : 'fm_bell'; // Add brightness
+                            clone.model = (Math.random() > 0.5) ? 'supersaw' : 'fm_bell';
                             gData.instruments[target].push(clone);
-                            if (UI.instSel.value === target) renderLayers(); // Update UI visually if user is looking at it
+                            if (UI.instSel.value === target) renderLayers();
                         }
                     }
                 }
 
-                // Calculate Global Tension Macro (0 to 1 over 16 bars)
                 macroFilterMod = (globalStep % 256) / 256;
+
+                // NEW: AI Controls EQ and Tempo Automation
+                if (eqFilters.length > 0) {
+                    eqFilters.forEach((filter, idx) => {
+                        // Create a sweeping wave effect across the bands that intensifies with tension
+                        let aiGain = Math.sin((globalStep * 0.05) + (idx * 0.5)) * (2 + macroFilterMod * 8);
+                        filter.gain.value = aiGain;
+                        // Ghost fader UI update
+                        let slider = document.querySelector(`.eq-slider[data-idx="${idx}"]`);
+                        if (slider) slider.value = aiGain.toFixed(1);
+                    });
+                }
+
+                // AI Tempo Drift (Update once per bar to avoid audio jitter)
+                if (step16 === 0) {
+                    let baseBpm = gData.bpm;
+                    // Push tempo up by up to 5 BPM at max tension, slightly drop on turnaround
+                    let targetBpm = isTurnaround ? baseBpm - 2 : baseBpm + Math.floor(macroFilterMod * 5);
+                    let currentBpm = parseInt(UI.bpm.value);
+                    let newBpm = Math.round(currentBpm + (targetBpm - currentBpm) * 0.5); // Smooth interpol
+
+                    UI.bpm.value = newBpm;
+                    document.getElementById('bpmVal').innerText = newBpm;
+                }
+
             } else {
                 chordOffset = gData.progression ? gData.progression[0] : 0;
                 macroFilterMod = 0.5;
@@ -1323,23 +1464,20 @@
             document.querySelectorAll(`.kick-step[data-step="${step16}"]`).forEach(el => el.classList.add('playing'));
             document.querySelectorAll(`.snare-step[data-step="${step16}"]`).forEach(el => el.classList.add('playing'));
 
-            // Canvas Scanning
             if (currentTab === 'tab-image' || currentTab === 'tab-draw' || (currentTab === 'tab-cam' && UI.mode.value !== 'motion')) {
                 const stepW = 800 / STEPS_PER_IMAGE;
                 const curX = stepIndex * stepW;
 
                 activeEnv.ph.style.left = `${curX}px`;
-                activeEnv.ph.parentElement.scrollLeft = Math.max(0, curX - 400); // Auto scroll center
+                activeEnv.ph.parentElement.scrollLeft = Math.max(0, curX - 400);
 
                 const sampleY = activeEnv.c.height / 2;
                 const px = activeEnv.ctx.getImageData(curX + (stepW / 2), sampleY, 1, 1).data;
                 const r = px[0], g = px[1], b = px[2];
 
                 if (px[3] > 0 && (r + g + b) > 40) {
-
-                    // Genre rule: If Techno/Acid, don't change notes based on color variations often. If Trance/Pop, shift notes.
                     let isRepetitive = gData.name.includes("Techno") || gData.name.includes("Acid") || gData.name.includes("Drill");
-                    if (!isRepetitive || (isRepetitive && step16 === 0)) { // Only allow note changes every bar for repetitive genres
+                    if (!isRepetitive || (isRepetitive && step16 === 0)) {
                         if (r > 180) melodyPos += 1; else if (r < 80) melodyPos -= 1;
                         if (melodyPos >= gData.scale.length) melodyPos = gData.scale.length - 1;
                         if (melodyPos < 0) melodyPos = 0;
@@ -1358,26 +1496,71 @@
             clockInterval = setTimeout(runSequencerClock, (60000 / parseInt(UI.bpm.value)) / 4);
         }
 
-        // --- TAB 1: IMAGE SCROLLER ---
+        // --- TAB 1: IMAGE SCROLLER & REARRANGER ---
         function renderSeqImages() {
             seqCanvas.width = Math.max(800, seqImages.length * 800);
             seqCtx.fillStyle = '#000'; seqCtx.fillRect(0, 0, seqCanvas.width, seqCanvas.height);
             seqImages.forEach((img, i) => {
                 seqCtx.drawImage(img, i * 800, 0, 800, 400);
             });
+            renderThumbnails();
+        }
+
+        function renderThumbnails() {
+            const container = document.getElementById('thumb-container');
+            container.innerHTML = '';
+            seqImages.forEach((img, i) => {
+                const wrap = document.createElement('div');
+                wrap.style.cssText = "min-width: 120px; background:#111; border:1px solid #333; padding:5px; border-radius:4px; display:flex; flex-direction:column; gap:5px; align-items:center;";
+
+                const thumb = new Image(); thumb.src = img.src;
+                thumb.style.width = "110px"; thumb.style.height = "55px"; thumb.style.objectFit = "cover";
+
+                const controls = document.createElement('div'); controls.style.display = "flex"; controls.style.gap = "5px"; controls.style.width = "100%";
+
+                const btnLeft = document.createElement('button'); btnLeft.innerText = "◀"; btnLeft.style.padding = "2px 5px"; btnLeft.style.flex = "1";
+                btnLeft.onclick = () => { moveImg(i, -1); };
+
+                const btnRight = document.createElement('button'); btnRight.innerText = "▶"; btnRight.style.padding = "2px 5px"; btnRight.style.flex = "1";
+                btnRight.onclick = () => { moveImg(i, 1); };
+
+                const btnDel = document.createElement('button'); btnDel.innerText = "🗑"; btnDel.className = "btn-danger"; btnDel.style.padding = "2px 5px"; btnDel.style.flex = "1";
+                btnDel.onclick = () => { seqImages.splice(i, 1); renderSeqImages(); showToast("Image removed."); };
+
+                if (i === 0) btnLeft.disabled = true;
+                if (i === seqImages.length - 1) btnRight.disabled = true;
+
+                controls.append(btnLeft, btnDel, btnRight);
+                wrap.append(thumb, controls);
+                container.appendChild(wrap);
+            });
+        }
+
+        function moveImg(idx, direction) {
+            if (idx + direction < 0 || idx + direction >= seqImages.length) return;
+            const temp = seqImages[idx];
+            seqImages[idx] = seqImages[idx + direction];
+            seqImages[idx + direction] = temp;
+            renderSeqImages();
         }
 
         document.getElementById('imageUpload').addEventListener('change', (e) => {
-            Array.from(e.target.files).forEach(file => {
+            let loadedCount = 0;
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     const img = new Image();
-                    img.onload = () => { seqImages.push(img); renderSeqImages(); };
+                    img.onload = () => {
+                        seqImages.push(img);
+                        loadedCount++;
+                        if (loadedCount === files.length) renderSeqImages();
+                    };
                     img.src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             });
-            showToast("Images appended to timeline!");
+            showToast("Images appended! Use arrows below to rearrange.");
         });
 
         document.getElementById('duplicateImgBtn').addEventListener('click', () => {
@@ -1412,7 +1595,6 @@
             drawRedoStack = [];
         }
 
-        // FIX 2: Canvas scaling alignment bug on mobile/resized windows
         function getMousePos(canvas, evt) {
             const rect = canvas.getBoundingClientRect();
             return {
@@ -1455,23 +1637,84 @@
             saveDrawState(); drawCtx.fillStyle = '#000'; drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
         });
 
-        // --- GLOBAL CONTROLS ---
+        // --- GLOBAL CONTROLS & SAVE/LOAD ---
+        document.getElementById('saveSetupBtn').addEventListener('click', () => {
+            const setup = {
+                genres: genres,
+                bpm: UI.bpm.value,
+                mode: UI.mode.value,
+                eq: Array.from(document.querySelectorAll('.eq-slider')).map(s => s.value),
+                images: seqImages.map(img => img.src)
+            };
+            const blob = new Blob([JSON.stringify(setup)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `Synesthesia_Project_${Date.now()}.json`; a.click();
+            showToast("Project saved locally!");
+        });
+
+        document.getElementById('loadSetupUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const setup = JSON.parse(event.target.result);
+
+                    // Restore genres and layer modifications
+                    Object.keys(setup.genres).forEach(k => { genres[k] = setup.genres[k]; });
+
+                    // Restore basic UI settings
+                    UI.bpm.value = setup.bpm; document.getElementById('bpmVal').innerText = setup.bpm;
+                    UI.mode.value = setup.mode;
+
+                    // Restore EQ
+                    const sliders = document.querySelectorAll('.eq-slider');
+                    setup.eq.forEach((val, i) => {
+                        if (sliders[i]) {
+                            sliders[i].value = val;
+                            if (eqFilters.length > 0 && eqFilters[i]) eqFilters[i].gain.value = parseFloat(val);
+                        }
+                    });
+
+                    // Restore Images
+                    seqImages = [];
+                    let loadedCount = 0;
+                    if (setup.images && setup.images.length > 0) {
+                        setup.images.forEach(src => {
+                            const img = new Image();
+                            img.onload = () => {
+                                loadedCount++;
+                                if (loadedCount === setup.images.length) renderSeqImages();
+                            };
+                            img.src = src;
+                            seqImages.push(img);
+                        });
+                    } else {
+                        renderSeqImages();
+                    }
+
+                    loadGenre();
+                    showToast("Project Loaded Successfully!");
+                } catch (err) {
+                    showToast("Failed to load project. Invalid file.");
+                }
+            };
+            reader.readAsText(file);
+        });
+
         document.getElementById('masterClearBtn').addEventListener('click', () => {
             seqImages = []; renderSeqImages();
             drawCtx.fillStyle = '#000'; drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
             drawUndoStack = []; drawRedoStack = [];
-
-            // FIX 4: Properly reset genre dictionaries to delete AI injected layers
             Object.keys(genres).forEach(k => {
                 genres[k].instruments = JSON.parse(JSON.stringify(originalGenres[k].instruments));
             });
             renderLayers();
-
             showToast("Master Reset Complete. All AI mods cleared.");
         });
 
         UI.btnPlay.addEventListener('click', () => {
-            initAudio(); // Also handles resume if suspended
+            initAudio();
             if (!isPlaying) {
                 isPlaying = true; globalStep = 0;
                 getActiveCanvas().ph.style.display = 'block';
@@ -1482,10 +1725,7 @@
         document.getElementById('stopBtn').addEventListener('click', () => {
             isPlaying = false; clearTimeout(clockInterval);
             document.querySelectorAll('.playhead').forEach(ph => ph.style.display = 'none');
-            // FIX 1: Instantly suspends the Web Audio API Context to kill delay/reverb rings
-            if (ctx && ctx.state === 'running') {
-                ctx.suspend();
-            }
+            if (ctx && ctx.state === 'running') ctx.suspend();
         });
 
         document.getElementById('recordBtn').addEventListener('click', (e) => {
