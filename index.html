@@ -691,8 +691,12 @@
                     </div>
 
                     <div class="control-item" style="justify-content: flex-end;">
-                        <button id="addLayerBtn" class="btn-secondary" style="padding: 10px;">➕ Add Synthesis
-                            Layer</button>
+                        <label>Stack Base</label>
+                        <div style="display:flex; gap:5px;">
+                            <select id="stackBaseSelect"
+                                style="padding: 10px; font-size: 0.9rem; border-color: var(--neon-secondary); color: white;"></select>
+                            <button id="addLayerBtn" class="btn-secondary" style="padding: 10px; flex:1;">➕ Add</button>
+                        </div>
                     </div>
                 </div>
 
@@ -863,6 +867,9 @@
         genres.funk.instruments.bass[0].model = "plucked_string";
         genres.classical_baroque.instruments.lead[0].model = "plucked_string";
 
+        // MASTER RESET FIX: Create a pristine deep-clone copy of original genres
+        const originalGenres = JSON.parse(JSON.stringify(genres));
+
         // --- GLOBAL STATE ---
         const UI = {
             genreSel: document.getElementById('genreSelect'), instSel: document.getElementById('instSelect'),
@@ -898,6 +905,12 @@
 
         // --- TAB & UI LOGIC ---
         function switchTab(tabId) {
+            // FIX 5: Gracefully stop screen recording before switching tabs
+            if (isRecording && currentTab !== tabId) {
+                document.getElementById('recordBtn').click();
+                showToast("Recording auto-stopped to safely switch tabs.");
+            }
+
             currentTab = tabId;
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -975,22 +988,41 @@
             renderLayers();
         };
 
+        // NEW STACKING FEATURE: Mix any base instrument into your active stack!
         document.getElementById('addLayerBtn').addEventListener('click', () => {
-            const instLayers = genres[UI.genreSel.value].instruments[UI.instSel.value];
-            const clone = JSON.parse(JSON.stringify(instLayers[instLayers.length - 1]));
-            clone.del = Math.min(1.0, clone.del + 0.2); // slight variation to make it audible
+            const targetStack = UI.instSel.value;
+            const baseType = document.getElementById('stackBaseSelect').value;
+            const instLayers = genres[UI.genreSel.value].instruments[targetStack];
+
+            // Grab the pristine base layer definition from originalGenres so we get a clean template
+            const clone = JSON.parse(JSON.stringify(originalGenres[UI.genreSel.value].instruments[baseType][0]));
+
+            // Slightly tweak parameters to avoid direct phase cancellation on identical layers
+            clone.del = Math.min(1.0, clone.del + 0.2);
+            clone.cut = Math.min(10000, clone.cut + 500);
+
             instLayers.push(clone);
             renderLayers();
+            showToast(`Added a [${baseType.toUpperCase()}] layer to your ${targetStack.toUpperCase()} stack!`);
         });
 
         function loadGenre() {
             const g = genres[UI.genreSel.value];
             document.getElementById('infoTitle').innerText = g.name; document.getElementById('infoDesc').innerText = g.desc;
             UI.bpm.value = g.bpm; document.getElementById('bpmVal').innerText = g.bpm;
+
             UI.instSel.innerHTML = '';
+            const stackSel = document.getElementById('stackBaseSelect');
+            if (stackSel) stackSel.innerHTML = '';
+
             Object.keys(g.instruments).forEach(key => {
                 let opt = document.createElement('option'); opt.value = key; opt.text = `[${key.toUpperCase()}] ${g.instruments[key][0].name}`;
                 UI.instSel.appendChild(opt);
+
+                if (stackSel) {
+                    let opt2 = document.createElement('option'); opt2.value = key; opt2.text = `[${key.toUpperCase()}]`;
+                    stackSel.appendChild(opt2);
+                }
             });
             renderLayers(); loadRhythmToUI();
             melodyPos = Math.floor(g.scale.length / 2); globalStep = 0;
@@ -1231,15 +1263,13 @@
             currentBar = Math.floor((globalStep % 256) / 16) + 1;
 
             // SLOW IMAGE SCROLL:
-            // Instead of 800px = 1 bar (16 steps). We make 800px = 8 BARS (128 steps)
-            // This forces the playhead to slowly process colours for a "Long Music" feel.
             const STEPS_PER_IMAGE = 128;
             const totalStepsInCanvas = Math.max(16, (activeEnv.c.width / 800) * STEPS_PER_IMAGE);
             const stepIndex = globalStep % totalStepsInCanvas;
 
             if (UI.aiDir.checked) {
-                // Determine Turnarounds (Stop the music on the last 2 beats of Bar 4, 8, and 16)
-                let isTurnaround = (currentBar % 4 === 0) && step16 >= 14;
+                // FIX 3: Turnarounds trigger exactly on the last 2 beats (steps 8-15 of the bar)
+                let isTurnaround = (currentBar % 4 === 0) && step16 >= 8;
 
                 // Progression logic based on the 16-bar block
                 let progIdx = Math.floor((currentBar - 1) / 4);
@@ -1293,7 +1323,7 @@
             document.querySelectorAll(`.kick-step[data-step="${step16}"]`).forEach(el => el.classList.add('playing'));
             document.querySelectorAll(`.snare-step[data-step="${step16}"]`).forEach(el => el.classList.add('playing'));
 
-            // Canvas Scanning (Now SLOWED down)
+            // Canvas Scanning
             if (currentTab === 'tab-image' || currentTab === 'tab-draw' || (currentTab === 'tab-cam' && UI.mode.value !== 'motion')) {
                 const stepW = 800 / STEPS_PER_IMAGE;
                 const curX = stepIndex * stepW;
@@ -1382,15 +1412,24 @@
             drawRedoStack = [];
         }
 
+        // FIX 2: Canvas scaling alignment bug on mobile/resized windows
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (evt.clientX - rect.left) * (canvas.width / rect.width),
+                y: (evt.clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
         drawCanvas.addEventListener('mousedown', (e) => {
             isDrawing = true; saveDrawState();
-            const rect = drawCanvas.getBoundingClientRect();
-            drawCtx.beginPath(); drawCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            const pos = getMousePos(drawCanvas, e);
+            drawCtx.beginPath(); drawCtx.moveTo(pos.x, pos.y);
         });
         drawCanvas.addEventListener('mousemove', (e) => {
             if (isDrawing) {
-                const rect = drawCanvas.getBoundingClientRect();
-                drawCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                const pos = getMousePos(drawCanvas, e);
+                drawCtx.lineTo(pos.x, pos.y);
                 drawCtx.strokeStyle = document.getElementById('drawColor').value;
                 drawCtx.lineWidth = document.getElementById('drawSize').value;
                 drawCtx.lineCap = 'round';
@@ -1421,11 +1460,18 @@
             seqImages = []; renderSeqImages();
             drawCtx.fillStyle = '#000'; drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
             drawUndoStack = []; drawRedoStack = [];
-            showToast("Master Reset Complete.");
+
+            // FIX 4: Properly reset genre dictionaries to delete AI injected layers
+            Object.keys(genres).forEach(k => {
+                genres[k].instruments = JSON.parse(JSON.stringify(originalGenres[k].instruments));
+            });
+            renderLayers();
+
+            showToast("Master Reset Complete. All AI mods cleared.");
         });
 
         UI.btnPlay.addEventListener('click', () => {
-            initAudio();
+            initAudio(); // Also handles resume if suspended
             if (!isPlaying) {
                 isPlaying = true; globalStep = 0;
                 getActiveCanvas().ph.style.display = 'block';
@@ -1436,6 +1482,10 @@
         document.getElementById('stopBtn').addEventListener('click', () => {
             isPlaying = false; clearTimeout(clockInterval);
             document.querySelectorAll('.playhead').forEach(ph => ph.style.display = 'none');
+            // FIX 1: Instantly suspends the Web Audio API Context to kill delay/reverb rings
+            if (ctx && ctx.state === 'running') {
+                ctx.suspend();
+            }
         });
 
         document.getElementById('recordBtn').addEventListener('click', (e) => {
