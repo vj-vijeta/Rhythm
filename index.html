@@ -27,6 +27,7 @@
             padding: 15px;
             font-size: 14px;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
 
         h1 {
@@ -201,7 +202,6 @@
         input[type="range"].ai-controlled {
             opacity: 0.6;
             pointer-events: none;
-            /* Prevents user from fighting the AI */
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -246,6 +246,7 @@
             color: #888;
             font-weight: bold;
             text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .tab-btn.active {
@@ -486,9 +487,7 @@
 
         .eq-band input[type="range"] {
             writing-mode: bt-lr;
-            /* IE */
             -webkit-appearance: slider-vertical;
-            /* WebKit */
             width: 8px;
             height: 100px;
             padding: 0 5px;
@@ -544,7 +543,7 @@
                 📂 LOAD PROJECT
                 <input type="file" id="loadSetupUpload" accept=".json" style="display:none;">
             </label>
-            <button id="recordBtn" class="btn-record">🔴 Record</button>
+            <button id="recordBtn" class="btn-record">🔴 Record Master</button>
             <a id="downloadLink"
                 style="display:none; color: var(--neon); font-size:0.8rem; text-decoration: underline;">Save .webm</a>
             <button id="playBtn">▶ PLAY</button>
@@ -560,6 +559,7 @@
                 <button class="tab-btn active" onclick="switchTab('tab-image')">🖼️ Slow Image Scroll</button>
                 <button class="tab-btn" onclick="switchTab('tab-cam')">📷 Live Motion Feed</button>
                 <button class="tab-btn" onclick="switchTab('tab-draw')">🖌️ Draw Your Music</button>
+                <button class="tab-btn" onclick="switchTab('tab-vocals')">🎙️ Vocals & Mix</button> <!-- NEW TAB -->
             </div>
 
             <div id="tab-image" class="tab-content active">
@@ -569,8 +569,7 @@
                         <div style="display: flex; gap: 8px;">
                             <input type="file" id="imageUpload" accept="image/*" multiple
                                 style="flex: 2; padding: 6px;">
-                            <button id="duplicateImgBtn" class="btn-secondary" style="flex: 1;">➕ Duplicate
-                                Last</button>
+                            <button id="duplicateImgBtn" class="btn-secondary" style="flex: 1;">➕ Duplicate Last</button>
                             <button id="saveSeqBtn" style="flex: 1;">💾 Save Pattern</button>
                             <button id="clearSeqBtn" class="btn-danger" style="flex: 1;">🗑️ Clear</button>
                         </div>
@@ -642,11 +641,40 @@
                 </div>
             </div>
 
+            <!-- NEW TAB: VOCALS & MIX -->
+            <div id="tab-vocals" class="tab-content">
+                <div class="control-grid" style="align-items: end;">
+                    <div class="control-item" style="grid-column: span 1;">
+                        <label>Voice Recording</label>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="initMicBtn" style="flex: 1;">🎤 Connect Mic</button>
+                            <button id="recVocalBtn" class="btn-record" disabled style="flex: 1;">🔴 Rec Take</button>
+                        </div>
+                    </div>
+                    <div class="control-item" style="grid-column: span 1;">
+                        <label>Import Audio/Webm to Mix</label>
+                        <input type="file" id="importMixBtn" accept="audio/*, video/webm" style="padding: 6px;">
+                    </div>
+                </div>
+                
+                <div class="header-bar" style="margin-top: 15px; border-bottom:1px solid #333; padding-bottom:5px;">
+                    <h3 style="font-size:0.9rem;">Multi-Track Mixer</h3>
+                </div>
+                
+                <div id="mixTracksContainer" style="display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto; padding-right: 5px;">
+                    <!-- Track Cards will populate here -->
+                </div>
+            </div>
+            <!-- END NEW TAB -->
+
             <div class="header-bar" style="margin-top: 20px;">
                 <h3>Global Culture, Mixer & Multi-Layer Engine</h3>
                 <div class="control-item" style="width: 200px;">
                     <label>Tempo (BPM) <span id="bpmVal" class="value-display">125</span></label>
                     <input type="range" id="bpmSlider" min="50" max="220" value="125">
+                    <label style="font-size:0.7rem; margin-top:5px; color:var(--neon-warn); display:flex; align-items:center; gap:5px; cursor:pointer; text-transform:none;">
+                        <input type="checkbox" id="aiTempoToggle" checked style="margin:0; accent-color:var(--neon-warn);"> AI Controls Tempo
+                    </label>
                 </div>
             </div>
 
@@ -655,20 +683,13 @@
                 <div class="eq-container">
                     <div style="color:var(--neon); font-size:0.8rem; font-weight:bold; width: 80px; text-align:center;">
                         MASTER EQ</div>
-                    <div class="eq-band"><label>60Hz</label><input type="range" class="eq-slider" data-idx="0" min="-15"
-                            max="15" step="0.5" value="0"></div>
-                    <div class="eq-band"><label>150Hz</label><input type="range" class="eq-slider" data-idx="1"
-                            min="-15" max="15" step="0.5" value="0"></div>
-                    <div class="eq-band"><label>400Hz</label><input type="range" class="eq-slider" data-idx="2"
-                            min="-15" max="15" step="0.5" value="0"></div>
-                    <div class="eq-band"><label>1kHz</label><input type="range" class="eq-slider" data-idx="3" min="-15"
-                            max="15" step="0.5" value="0"></div>
-                    <div class="eq-band"><label>2.5kHz</label><input type="range" class="eq-slider" data-idx="4"
-                            min="-15" max="15" step="0.5" value="0"></div>
-                    <div class="eq-band"><label>6kHz</label><input type="range" class="eq-slider" data-idx="5" min="-15"
-                            max="15" step="0.5" value="0"></div>
-                    <div class="eq-band"><label>15kHz</label><input type="range" class="eq-slider" data-idx="6"
-                            min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>60Hz</label><input type="range" class="eq-slider" data-idx="0" min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>150Hz</label><input type="range" class="eq-slider" data-idx="1" min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>400Hz</label><input type="range" class="eq-slider" data-idx="2" min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>1kHz</label><input type="range" class="eq-slider" data-idx="3" min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>2.5kHz</label><input type="range" class="eq-slider" data-idx="4" min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>6kHz</label><input type="range" class="eq-slider" data-idx="5" min="-15" max="15" step="0.5" value="0"></div>
+                    <div class="eq-band"><label>15kHz</label><input type="range" class="eq-slider" data-idx="6" min="-15" max="15" step="0.5" value="0"></div>
                 </div>
 
                 <div class="mixer-group" style="margin-bottom: 15px;">
@@ -948,7 +969,8 @@
             genreSel: document.getElementById('genreSelect'), instSel: document.getElementById('instSelect'),
             bpm: document.getElementById('bpmSlider'), mode: document.getElementById('modeSelect'),
             btnPlay: document.getElementById('playBtn'), aiDir: document.getElementById('aiDirector'),
-            layerContainer: document.getElementById('layerContainer')
+            layerContainer: document.getElementById('layerContainer'),
+            aiTempo: document.getElementById('aiTempoToggle')
         };
         const Mixer = { lead: document.getElementById('mixLead'), arp: document.getElementById('mixArp'), chords: document.getElementById('mixChords'), pad: document.getElementById('mixPad'), bass: document.getElementById('mixBass'), sub: document.getElementById('mixSub'), drums: document.getElementById('mixDrums') };
 
@@ -965,6 +987,14 @@
         let eqFilters = [];
         const eqBands7 = [60, 150, 400, 1000, 2500, 6000, 15000];
 
+        // NEW: VOCALS & MIX TRACKS STATE
+        let micStreamGlobal = null;
+        let micRecorderLocal = null;
+        let micChunksLocal = [];
+        let isMicRecordingLocal = false;
+        let trackCounter = 0;
+        const mixTracks = {};
+
         // CANVAS ENGINES
         const seqCanvas = document.getElementById('seq-canvas'); const seqCtx = seqCanvas.getContext('2d', { willReadFrequently: true });
         const camCanvas = document.getElementById('cam-canvas'); const camCtx = camCanvas.getContext('2d', { willReadFrequently: true });
@@ -977,7 +1007,7 @@
         function getActiveCanvas() {
             if (currentTab === 'tab-image') return { c: seqCanvas, ctx: seqCtx, ph: document.getElementById('playhead-seq') };
             if (currentTab === 'tab-cam') return { c: camCanvas, ctx: camCtx, ph: document.getElementById('playhead-cam') };
-            return { c: drawCanvas, ctx: drawCtx, ph: document.getElementById('playhead-draw') };
+            return { c: drawCanvas, ctx: drawCtx, ph: document.getElementById('playhead-draw') }; // Default to draw if vocal tab active
         }
 
         // --- TAB & UI LOGIC ---
@@ -995,7 +1025,7 @@
             document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
 
             document.querySelectorAll('.playhead').forEach(ph => ph.style.display = 'none');
-            if (isPlaying) getActiveCanvas().ph.style.display = 'block';
+            if (isPlaying && tabId !== 'tab-vocals') getActiveCanvas().ph.style.display = 'block';
         }
 
         function buildRhythmGrid() {
@@ -1072,10 +1102,8 @@
             const baseType = document.getElementById('stackBaseSelect').value;
             const instLayers = genres[UI.genreSel.value].instruments[targetStack];
 
-            // Grab the pristine base layer definition from originalGenres so we get a clean template
             const clone = JSON.parse(JSON.stringify(originalGenres[UI.genreSel.value].instruments[baseType][0]));
 
-            // Slightly tweak parameters to avoid direct phase cancellation on identical layers
             clone.del = Math.min(1.0, clone.del + 0.2);
             clone.cut = Math.min(10000, clone.cut + 500);
 
@@ -1084,18 +1112,32 @@
             showToast(`Added a [${baseType.toUpperCase()}] layer to your ${targetStack.toUpperCase()} stack!`);
         });
 
-        // AI CHECKBOX TOGGLE - Handle UI lockouts
+        // AI TOGGLES
         UI.aiDir.addEventListener('change', () => {
-            const sliders = document.querySelectorAll('.eq-slider, #bpmSlider');
+            const eqSliders = document.querySelectorAll('.eq-slider');
+            const bpmSlider = document.getElementById('bpmSlider');
+
             if (UI.aiDir.checked) {
-                sliders.forEach(s => s.classList.add('ai-controlled'));
+                eqSliders.forEach(s => s.classList.add('ai-controlled'));
+                if (UI.aiTempo.checked) bpmSlider.classList.add('ai-controlled');
             } else {
-                sliders.forEach(s => s.classList.remove('ai-controlled'));
-                // Snap BPM back to genre base when disabled
+                eqSliders.forEach(s => s.classList.remove('ai-controlled'));
+                bpmSlider.classList.remove('ai-controlled');
                 UI.bpm.value = genres[UI.genreSel.value].bpm;
                 document.getElementById('bpmVal').innerText = UI.bpm.value;
             }
-            renderLayers(); // re-render to apply lock to layer volumes
+            renderLayers();
+        });
+
+        UI.aiTempo.addEventListener('change', () => {
+            const bpmSlider = document.getElementById('bpmSlider');
+            if (UI.aiTempo.checked && UI.aiDir.checked) {
+                bpmSlider.classList.add('ai-controlled');
+            } else {
+                bpmSlider.classList.remove('ai-controlled');
+                UI.bpm.value = genres[UI.genreSel.value].bpm;
+                document.getElementById('bpmVal').innerText = UI.bpm.value;
+            }
         });
 
         function loadGenre() {
@@ -1117,8 +1159,8 @@
                 }
             });
 
-            // Re-apply AI locks on load
-            if (UI.aiDir.checked) document.getElementById('bpmSlider').classList.add('ai-controlled');
+            if (UI.aiDir.checked && UI.aiTempo.checked) document.getElementById('bpmSlider').classList.add('ai-controlled');
+            else document.getElementById('bpmSlider').classList.remove('ai-controlled');
 
             renderLayers(); loadRhythmToUI();
             melodyPos = Math.floor(g.scale.length / 2); globalStep = 0;
@@ -1127,7 +1169,9 @@
         UI.genreSel.addEventListener('change', loadGenre);
         UI.instSel.addEventListener('change', renderLayers);
         UI.bpm.addEventListener('input', (e) => {
-            if (!UI.aiDir.checked) document.getElementById('bpmVal').innerText = e.target.value;
+            if (!(UI.aiDir.checked && UI.aiTempo.checked)) {
+                document.getElementById('bpmVal').innerText = e.target.value;
+            }
         });
 
         buildRhythmGrid(); loadGenre();
@@ -1150,7 +1194,6 @@
                 masterGain = ctx.createGain(); masterGain.gain.value = 0.5;
                 masterReverb = ctx.createConvolver(); masterReverb.buffer = createReverbBuffer(2.5, 2.0);
 
-                // 7 Band EQ Routing
                 let prevNode = masterGain;
                 eqBands7.forEach((freq, i) => {
                     const filter = ctx.createBiquadFilter();
@@ -1174,7 +1217,6 @@
             if (ctx.state === 'suspended') ctx.resume();
         }
 
-        // Tie EQ Sliders to Audio Nodes (Manual control)
         document.querySelectorAll('.eq-slider').forEach(slider => {
             slider.addEventListener('input', (e) => {
                 if (!UI.aiDir.checked) {
@@ -1192,6 +1234,132 @@
             for (let i = 0; i < n; ++i) { let x = i * 2 / n - 1; curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x)); }
             return curve;
         }
+
+        // --- NEW: VOCALS & MIX MANAGER ---
+        document.getElementById('initMicBtn').addEventListener('click', async () => {
+            try {
+                micStreamGlobal = await navigator.mediaDevices.getUserMedia({ audio: true });
+                document.getElementById('recVocalBtn').disabled = false;
+                showToast("Microphone Connected! Ready to record takes.");
+            } catch(e) {
+                showToast("Microphone access denied or not found.");
+            }
+        });
+
+        document.getElementById('recVocalBtn').addEventListener('click', (e) => {
+            if (!isMicRecordingLocal) {
+                micChunksLocal = [];
+                micRecorderLocal = new MediaRecorder(micStreamGlobal);
+                micRecorderLocal.ondataavailable = ev => micChunksLocal.push(ev.data);
+                micRecorderLocal.onstop = () => {
+                    const blob = new Blob(micChunksLocal, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    addMixTrack(url, `Vocal Take ${trackCounter + 1}`);
+                };
+                micRecorderLocal.start();
+                isMicRecordingLocal = true;
+                e.target.innerText = "⏹ Stop Vocal";
+                e.target.classList.add('recording');
+                showToast("Recording Vocal Take...");
+            } else {
+                micRecorderLocal.stop();
+                isMicRecordingLocal = false;
+                e.target.innerText = "🔴 Rec Take";
+                e.target.classList.remove('recording');
+                showToast("Take saved to mixer!");
+            }
+        });
+
+        document.getElementById('importMixBtn').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                addMixTrack(url, file.name);
+            }
+            e.target.value = ''; // reset so same file can be loaded again if needed
+        });
+
+        function addMixTrack(url, name) {
+            initAudio(); // Ensure context is ready for routing
+            trackCounter++;
+            const tId = trackCounter;
+
+            const row = document.createElement('div');
+            row.className = 'layer-card';
+            row.style.display = 'flex';
+            row.style.alignItems = 'center';
+            row.style.gap = '10px';
+            row.innerHTML = `
+                <div style="flex:2; font-weight:bold; color:var(--neon); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${name}">${name}</div>
+                <button class="btn-secondary" style="padding:4px 8px; font-size:10px;" onclick="document.getElementById('audio_${tId}').play()">▶</button>
+                <button class="btn-secondary" style="padding:4px 8px; font-size:10px;" onclick="document.getElementById('audio_${tId}').pause(); document.getElementById('audio_${tId}').currentTime=0;">⏹</button>
+                <div style="flex:1; display:flex; flex-direction:column;">
+                    <label style="font-size:9px;">Vol</label>
+                    <input type="range" id="trackVol_${tId}" min="0" max="2" step="0.05" value="1">
+                </div>
+                <div style="flex:1.5; display:flex; flex-direction:column;">
+                    <label style="font-size:9px;">Voice Filter</label>
+                    <select id="trackFx_${tId}" style="padding:2px; font-size:11px;">
+                        <option value="none">None</option>
+                        <option value="clear">Clear Voice</option>
+                        <option value="dist">Distorted</option>
+                        <option value="radio">Radio Lo-Fi</option>
+                    </select>
+                </div>
+                <button class="btn-danger" style="padding:4px 8px; font-size:10px;" onclick="removeMixTrack(${tId})">🗑</button>
+                <audio id="audio_${tId}" src="${url}" crossorigin="anonymous"></audio>
+            `;
+            document.getElementById('mixTracksContainer').appendChild(row);
+
+            const audioEl = document.getElementById(`audio_${tId}`);
+            // Fix CORS loading issues for local blobs vs external urls if any
+            const source = ctx.createMediaElementSource(audioEl);
+            const gainNode = ctx.createGain();
+
+            // FX Setup
+            const clearHigh = ctx.createBiquadFilter(); clearHigh.type = 'highpass'; clearHigh.frequency.value = 150;
+            const clearShelf = ctx.createBiquadFilter(); clearShelf.type = 'highshelf'; clearShelf.frequency.value = 3500; clearShelf.gain.value = 3;
+            
+            const distNode = ctx.createWaveShaper(); distNode.curve = makeDistCurve(60);
+            
+            const radioNode = ctx.createBiquadFilter(); radioNode.type = 'bandpass'; radioNode.frequency.value = 1200; radioNode.Q.value = 1.8;
+
+            let currFx = null;
+            const applyFx = () => {
+                source.disconnect();
+                if(currFx) currFx.disconnect();
+                clearHigh.disconnect(); clearShelf.disconnect(); distNode.disconnect(); radioNode.disconnect();
+
+                const val = document.getElementById(`trackFx_${tId}`).value;
+                if (val === 'none') {
+                    source.connect(gainNode);
+                } else if (val === 'clear') {
+                    source.connect(clearHigh); clearHigh.connect(clearShelf); clearShelf.connect(gainNode);
+                } else if (val === 'dist') {
+                    source.connect(distNode); distNode.connect(gainNode);
+                } else if (val === 'radio') {
+                    source.connect(radioNode); radioNode.connect(gainNode);
+                }
+            };
+
+            applyFx();
+            gainNode.connect(masterGain);
+
+            document.getElementById(`trackFx_${tId}`).addEventListener('change', applyFx);
+            document.getElementById(`trackVol_${tId}`).addEventListener('input', (e) => gainNode.gain.value = e.target.value);
+
+            mixTracks[tId] = { el: row, audio: audioEl, gain: gainNode, source: source };
+        }
+
+        window.removeMixTrack = (id) => {
+            if(mixTracks[id]) {
+                mixTracks[id].audio.pause();
+                mixTracks[id].source.disconnect();
+                mixTracks[id].gain.disconnect();
+                mixTracks[id].el.remove();
+                delete mixTracks[id];
+            }
+        };
 
         function triggerDrums(time, gName, isKick, isSnare) {
             if (!Mixer.drums.checked) return;
@@ -1237,9 +1405,9 @@
                 if (layerIndex > 0) config.del = Math.min(0.9, config.del + (macroFilterMod * 0.4));
                 config.att = Math.max(0.01, config.att * (1 + (Math.sin(ctx.currentTime * 0.5) * 0.2)));
 
-                // NEW: AI Volume Control (Breathing effect & Tension boost)
+                // AI Volume Control
                 activeVol = activeVol * (0.8 + 0.3 * Math.sin(ctx.currentTime * (layerIndex + 1.5))) + (macroFilterMod * 0.2);
-                activeVol = Math.max(0, Math.min(2.0, activeVol)); // clamp safe levels
+                activeVol = Math.max(0, Math.min(2.0, activeVol));
             }
 
             vFilt.frequency.setValueAtTime(config.cut, time);
@@ -1421,28 +1589,27 @@
 
                 macroFilterMod = (globalStep % 256) / 256;
 
-                // NEW: AI Controls EQ and Tempo Automation
+                // AI Controls EQ Automation
                 if (eqFilters.length > 0) {
                     eqFilters.forEach((filter, idx) => {
-                        // Create a sweeping wave effect across the bands that intensifies with tension
                         let aiGain = Math.sin((globalStep * 0.05) + (idx * 0.5)) * (2 + macroFilterMod * 8);
                         filter.gain.value = aiGain;
-                        // Ghost fader UI update
                         let slider = document.querySelector(`.eq-slider[data-idx="${idx}"]`);
                         if (slider) slider.value = aiGain.toFixed(1);
                     });
                 }
 
-                // AI Tempo Drift (Update once per bar to avoid audio jitter)
-                if (step16 === 0) {
-                    let baseBpm = gData.bpm;
-                    // Push tempo up by up to 5 BPM at max tension, slightly drop on turnaround
-                    let targetBpm = isTurnaround ? baseBpm - 2 : baseBpm + Math.floor(macroFilterMod * 5);
-                    let currentBpm = parseInt(UI.bpm.value);
-                    let newBpm = Math.round(currentBpm + (targetBpm - currentBpm) * 0.5); // Smooth interpol
+                // AI Tempo Drift
+                if (UI.aiTempo.checked) {
+                    if (step16 === 0) {
+                        let baseBpm = gData.bpm;
+                        let targetBpm = isTurnaround ? baseBpm - 2 : baseBpm + Math.floor(macroFilterMod * 5);
+                        let currentBpm = parseInt(UI.bpm.value);
+                        let newBpm = Math.round(currentBpm + (targetBpm - currentBpm) * 0.5);
 
-                    UI.bpm.value = newBpm;
-                    document.getElementById('bpmVal').innerText = newBpm;
+                        UI.bpm.value = newBpm;
+                        document.getElementById('bpmVal').innerText = newBpm;
+                    }
                 }
 
             } else {
@@ -1589,12 +1756,13 @@
         document.getElementById('startCamBtn').addEventListener('click', startCameraSession);
         document.getElementById('flipCamBtn').addEventListener('click', () => { useFrontCam = !useFrontCam; if (useCamera) startCameraSession(); });
 
-        // --- TAB 3: DRAW ---
+        // --- TAB 3: DRAW (WITH TOUCH SUPPORT) ---
         function saveDrawState() {
             drawUndoStack.push(drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height));
             drawRedoStack = [];
         }
 
+        // Handles MOUSE events
         function getMousePos(canvas, evt) {
             const rect = canvas.getBoundingClientRect();
             return {
@@ -1603,6 +1771,17 @@
             };
         }
 
+        // Handles TOUCH events
+        function getTouchPos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            const touch = evt.touches[0];
+            return {
+                x: (touch.clientX - rect.left) * (canvas.width / rect.width),
+                y: (touch.clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        // Mouse Listeners
         drawCanvas.addEventListener('mousedown', (e) => {
             isDrawing = true; saveDrawState();
             const pos = getMousePos(drawCanvas, e);
@@ -1620,6 +1799,33 @@
         });
         drawCanvas.addEventListener('mouseup', () => isDrawing = false);
         drawCanvas.addEventListener('mouseout', () => isDrawing = false);
+
+        // Touch Listeners
+        drawCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDrawing = true; saveDrawState();
+            const pos = getTouchPos(drawCanvas, e);
+            drawCtx.beginPath(); drawCtx.moveTo(pos.x, pos.y);
+        }, { passive: false });
+        drawCanvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isDrawing) {
+                const pos = getTouchPos(drawCanvas, e);
+                drawCtx.lineTo(pos.x, pos.y);
+                drawCtx.strokeStyle = document.getElementById('drawColor').value;
+                drawCtx.lineWidth = document.getElementById('drawSize').value;
+                drawCtx.lineCap = 'round';
+                drawCtx.stroke();
+            }
+        }, { passive: false });
+        drawCanvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            isDrawing = false;
+        }, { passive: false });
+        drawCanvas.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            isDrawing = false;
+        }, { passive: false });
 
         document.getElementById('undoBtn').addEventListener('click', () => {
             if (drawUndoStack.length > 0) {
@@ -1643,6 +1849,7 @@
                 genres: genres,
                 bpm: UI.bpm.value,
                 mode: UI.mode.value,
+                aiTempoChecked: UI.aiTempo.checked,
                 eq: Array.from(document.querySelectorAll('.eq-slider')).map(s => s.value),
                 images: seqImages.map(img => img.src)
             };
@@ -1659,15 +1866,11 @@
             reader.onload = (event) => {
                 try {
                     const setup = JSON.parse(event.target.result);
-
-                    // Restore genres and layer modifications
                     Object.keys(setup.genres).forEach(k => { genres[k] = setup.genres[k]; });
-
-                    // Restore basic UI settings
                     UI.bpm.value = setup.bpm; document.getElementById('bpmVal').innerText = setup.bpm;
                     UI.mode.value = setup.mode;
+                    if(setup.aiTempoChecked !== undefined) UI.aiTempo.checked = setup.aiTempoChecked;
 
-                    // Restore EQ
                     const sliders = document.querySelectorAll('.eq-slider');
                     setup.eq.forEach((val, i) => {
                         if (sliders[i]) {
@@ -1676,7 +1879,6 @@
                         }
                     });
 
-                    // Restore Images
                     seqImages = [];
                     let loadedCount = 0;
                     if (setup.images && setup.images.length > 0) {
@@ -1692,7 +1894,6 @@
                     } else {
                         renderSeqImages();
                     }
-
                     loadGenre();
                     showToast("Project Loaded Successfully!");
                 } catch (err) {
@@ -1710,6 +1911,10 @@
                 genres[k].instruments = JSON.parse(JSON.stringify(originalGenres[k].instruments));
             });
             renderLayers();
+            
+            // Clear mixer tracks
+            Object.keys(mixTracks).forEach(id => removeMixTrack(id));
+            
             showToast("Master Reset Complete. All AI mods cleared.");
         });
 
@@ -1717,7 +1922,11 @@
             initAudio();
             if (!isPlaying) {
                 isPlaying = true; globalStep = 0;
-                getActiveCanvas().ph.style.display = 'block';
+                if (currentTab !== 'tab-vocals') getActiveCanvas().ph.style.display = 'block';
+                
+                // Play all vocal/mix tracks in sync
+                Object.values(mixTracks).forEach(t => t.audio.play());
+
                 runSequencerClock();
             }
         });
@@ -1725,6 +1934,13 @@
         document.getElementById('stopBtn').addEventListener('click', () => {
             isPlaying = false; clearTimeout(clockInterval);
             document.querySelectorAll('.playhead').forEach(ph => ph.style.display = 'none');
+            
+            // Stop and rewind all vocal/mix tracks
+            Object.values(mixTracks).forEach(t => { 
+                t.audio.pause(); 
+                t.audio.currentTime = 0; 
+            });
+
             if (ctx && ctx.state === 'running') ctx.suspend();
         });
 
@@ -1740,13 +1956,13 @@
                     a.href = url; a.download = `Synesthesia_Global_${Date.now()}.webm`; a.style.display = 'inline-block';
                 };
                 recorder.start(); isRecording = true;
-                e.target.innerText = "⏹ Stop Record"; e.target.classList.add('recording');
+                e.target.innerText = "⏹ Stop Master Rec"; e.target.classList.add('recording');
                 document.getElementById('downloadLink').style.display = 'none';
-                showToast("Recording started...");
+                showToast("Master Recording started...");
             } else {
                 recorder.stop(); isRecording = false;
-                e.target.innerText = "🔴 Record"; e.target.classList.remove('recording');
-                showToast("Recording saved!");
+                e.target.innerText = "🔴 Record Master"; e.target.classList.remove('recording');
+                showToast("Master Recording saved!");
             }
         });
 
