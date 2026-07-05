@@ -261,29 +261,40 @@
             font-family: monospace;
         }
 
-        /* TABS UI */
+        /* TABS UI - Navigation */
         .tabs {
             display: flex;
-            gap: 5px;
-            border-bottom: 2px solid #333;
-            margin-bottom: 15px;
-            overflow-x: auto;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: #0a0a0f;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #222;
         }
 
         .tab-btn {
-            background: #111;
-            border: none;
-            border-radius: 6px 6px 0 0;
-            padding: 10px 20px;
+            background: #1a1a24;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px 15px;
             color: #888;
             font-weight: bold;
             text-transform: uppercase;
             white-space: nowrap;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .tab-btn:hover {
+            background: #2a2a35;
+            color: white;
         }
 
         .tab-btn.active {
             background: var(--neon);
             color: #000;
+            border-color: var(--neon);
         }
 
         .tab-content {
@@ -588,12 +599,13 @@
         <div class="panel">
 
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('tab-image')">🖼️ Slow Image Scroll</button>
-                <button class="tab-btn" onclick="switchTab('tab-cam')">📷 Live Motion Feed</button>
-                <button class="tab-btn" onclick="switchTab('tab-hybrid')">🖼️📷 Image + Live Cam</button>
-                <button class="tab-btn" onclick="switchTab('tab-draw')">🖌️ Draw Your Music</button>
-                <button class="tab-btn" onclick="switchTab('tab-vocals')">🎙️ Vocals & Mix</button>
-                <button class="tab-btn" onclick="switchTab('tab-remix')">🎛️ Genre Remixer</button>
+                <button class="tab-btn active" onclick="switchTab('tab-image')" title="Upload images to drive the synthesizer. Colors trigger different instruments!">🖼️ Slow Image Scroll</button>
+                <button class="tab-btn" onclick="switchTab('tab-cam')" title="Use your webcam's live motion to organically trigger and manipulate sounds.">📷 Live Motion Feed</button>
+                <button class="tab-btn" onclick="switchTab('tab-hybrid')" title="Combine image sequences with live camera motion for complex visual sequencing.">🖼️📷 Image + Live Cam</button>
+                <button class="tab-btn" onclick="switchTab('tab-draw')" title="Draw directly on the canvas to sculpt audio shapes and sequence notes manually.">🖌️ Draw Your Music</button>
+                <button class="tab-btn" onclick="switchTab('tab-vocals')" title="Record your microphone, import vocal stems, and use AI Voice generation.">🎙️ Vocals & Mix</button>
+                <button class="tab-btn" onclick="switchTab('tab-remix')" title="Upload an existing track to auto-detect BPM and build a remix around it.">🎛️ Genre Remixer</button>
+                <button class="tab-btn" onclick="switchTab('tab-composer')" title="Use a classic 16-step Piano Roll grid to write melodies, or let the AI auto-compose one.">🎹 AI Composer</button>
             </div>
 
             <div id="tab-image" class="tab-content active">
@@ -820,18 +832,23 @@
                     </div>
                     <div class="control-item">
                         <label>Target AI Genre</label>
-                        <select id="remixTargetGenre" style="padding: 8px; background: #1a1a24; color: white;">
-                            <optgroup label="EDM & Club">
+                        <select id="remixTargetGenre" style="padding: 8px; background: #1a1a24; color: white;" title="Select the target style for your uploaded track. The AI will repitch and reconstruct it into this style.">
+                            <optgroup label="House & EDM">
                                 <option value="house_deep">Deep House</option>
                                 <option value="house_tech">Tech House</option>
                                 <option value="amapiano">Amapiano</option>
+                                <option value="jumpstyle">Jumpstyle</option>
+                            </optgroup>
+                            <optgroup label="Techno (All Styles)">
                                 <option value="techno_peak">Peak Time Techno</option>
+                                <option value="hi_techno">High-Tech Minimal</option>
                                 <option value="techno_acid">Acid Techno</option>
                                 <option value="techno_minimal">Minimal Techno</option>
                                 <option value="hard_techno">Hard Techno</option>
-                                <option value="jumpstyle">Jumpstyle</option>
                                 <option value="schranz">Schranz (Hardcore)</option>
                                 <option value="techno_industrial">Industrial Techno</option>
+                            </optgroup>
+                            <optgroup label="Trance & Psy">
                                 <option value="trance_uplifting">Uplifting Trance</option>
                                 <option value="psytrance">Psytrance (Full-On)</option>
                                 <option value="darkpsy">Darkpsy (High Speed)</option>
@@ -905,9 +922,26 @@
                 <div id="remixStatus" style="margin-top: 10px; color: var(--neon-warn); font-size: 0.9rem;">No track loaded.</div>
             </div>
 
-
-
-            <div class="header-bar"
+            <div id="tab-composer" class="tab-content">
+                <div class="control-grid" style="align-items: end;">
+                    <div class="control-item span-2-desktop">
+                        <label title="These controls allow the AI to automatically orchestrate the genre, drum rhythm, layer stack, and generate a melody for you on the Piano Roll.">AI Controls ℹ️</label>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <select id="aiComposerGenre" style="padding: 10px; font-size: 0.9rem; flex: 1 1 200px;" title="Step 1: Select the Genre you want the AI to compose in.">
+                                <option value="">Loading genres...</option>
+                            </select>
+                            <button id="aiComposeBtn" class="btn-secondary" style="flex:1 1 200px;" title="Step 2: Let the AI orchestrate a unique melody based on the selected genre.">🤖 Auto-Compose Melody</button>
+                            <button id="clearComposerBtn" class="btn-danger" style="flex:0 0 100px;" title="Wipe the Piano Roll grid clean.">🗑️ Clear</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px; background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                    <div id="composer-grid" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px; max-height: 400px;">
+                        <!-- JS will populate rows and columns here -->
+                    </div>
+                </div>
+            </div>            <div class="header-bar"
                 style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                 <h3>Global Culture, Mixer & Multi-Layer Engine</h3>
 
@@ -971,19 +1005,24 @@
 
                 <div class="control-grid">
                     <div class="control-item">
-                        <label>Master Genre & Form</label>
-                        <select id="genreSelect" style="padding: 10px; font-size: 0.9rem;">
-                            <optgroup label="EDM & Club">
+                        <label title="Selects the foundational music genre. This dictates the tempo, drum loops, default synth sounds, and AI composition style.">Master Genre & Form ℹ️</label>
+                        <select id="genreSelect" style="padding: 10px; font-size: 0.9rem;" title="Choose the genre. The AI Composer will adapt automatically.">
+                            <optgroup label="House & EDM">
                                 <option value="house_deep">Deep House</option>
                                 <option value="house_tech">Tech House</option>
                                 <option value="amapiano">Amapiano</option>
+                                <option value="jumpstyle">Jumpstyle</option>
+                            </optgroup>
+                            <optgroup label="Techno (All Styles)">
                                 <option value="techno_peak">Peak Time Techno</option>
+                                <option value="hi_techno">High-Tech Minimal</option>
                                 <option value="techno_acid">Acid Techno</option>
                                 <option value="techno_minimal">Minimal Techno</option>
                                 <option value="hard_techno">Hard Techno</option>
-                                <option value="jumpstyle">Jumpstyle</option>
                                 <option value="schranz">Schranz (Hardcore)</option>
                                 <option value="techno_industrial">Industrial Techno</option>
+                            </optgroup>
+                            <optgroup label="Trance & Psy">
                                 <option value="trance_uplifting">Uplifting Trance</option>
                                 <option value="psytrance">Psytrance (Full-On)</option>
                                 <option value="darkpsy">Darkpsy (High Speed)</option>
@@ -1046,13 +1085,13 @@
                     </div>
 
                     <div class="control-item">
-                        <label>Edit Instrument Stack</label>
+                        <label title="Select an active layer (like Lead, Bass, or Arp) to modify its synthesizer properties like Waveform, Filter, and Delay.">Edit Instrument Stack ℹ️</label>
                         <select id="instSelect"
                             style="padding: 10px; font-size: 0.9rem; border-color: var(--neon-secondary); color: white;"></select>
                     </div>
 
                     <div class="control-item" style="justify-content: flex-end;">
-                        <label>Stack Base</label>
+                        <label title="Choose a base layer to add to your instrument stack. You can stack multiple layers to create massive sounds!">Stack Base ℹ️</label>
                         <div style="display:flex; gap:5px;">
                             <select id="stackBaseSelect"
                                 style="padding: 10px; font-size: 0.9rem; border-color: var(--neon-secondary); color: white;"></select>
@@ -1067,7 +1106,7 @@
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px;">
-                <label>Live Rhythm Sequencer (1 Bar Loop)</label>
+                <label title="A classic 16-step drum machine. You can manually draw drum beats or load a preset loop from the dropdown.">Live Rhythm Sequencer (1 Bar Loop) ℹ️</label>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <select id="rhythmLoopPreset" onchange="loadRhythmPreset(this.value); this.value='';" style="padding: 4px; font-size: 10px; background: #1a1a24; color: var(--neon); border: 1px solid var(--neon); border-radius: 4px;">
                         <option value="">-- Load Preset Loop --</option>
@@ -1281,6 +1320,7 @@
             house_tech: { name: "Tech House", desc: "Minimal house with techno basslines.", bpm: 126, scale: scales.min_pent, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
             amapiano: { name: "Amapiano", desc: "South African house.", bpm: 113, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
             techno_peak: { name: "Peak Time Techno", desc: "Driving, huge warehouse sound.", bpm: 132, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            hi_techno: { name: "High-Tech Minimal", desc: "Fast, precise, psychedelic minimal.", bpm: 138, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0] } },
             techno_acid: { name: "Acid Techno", desc: "Squelching 303 basslines.", bpm: 135, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('acid'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
             techno_minimal: { name: "Minimal Techno", desc: "Stripped back clicks and subs.", bpm: 125, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
             hard_techno: { name: "Hard Techno", desc: "Fast, aggressive, distorted kicks.", bpm: 150, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('industrial'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1], perc: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
@@ -2528,6 +2568,27 @@
                 }
             }
 
+            if (currentTab === 'tab-composer') {
+                const notesToPlay = [];
+                for (let note = 0; note < 7; note++) {
+                    if (composerGrid[step16][note]) {
+                        notesToPlay.push(note);
+                    }
+                }
+                
+                document.querySelectorAll('.composer-cell').forEach(c => c.style.border = '1px solid #333');
+                document.querySelectorAll(`.composer-cell[data-step="${step16}"]`).forEach(c => c.style.border = '1px solid #fff');
+                
+                if (notesToPlay.length > 0) {
+                    if (Mixer.lead.checked) {
+                        notesToPlay.forEach(n => triggerInstrumentLayers(time, gData, 'lead', n, 1));
+                    }
+                    if (Mixer.bass.checked) {
+                        triggerInstrumentLayers(time, gData, 'bass', notesToPlay[0], -1);
+                    }
+                }
+            }
+
             globalStep++;
             clockInterval = setTimeout(runSequencerClock, (60000 / parseInt(UI.bpm.value)) / 4);
         }
@@ -2798,6 +2859,10 @@
             });
             Object.keys(mixTracks).forEach(id => removeMixTrack(id));
             loadRhythmPreset('clear');
+            if (typeof initComposerGrid === 'function') {
+                composerGrid = Array(16).fill().map(() => Array(7).fill(false));
+                initComposerGrid();
+            }
             if (window.remixAudioSource) { window.remixAudioSource.stop(); window.remixAudioSource = null; }
             const rStat = document.getElementById('remixStatus');
             if (rStat) rStat.innerText = 'No track loaded.';
@@ -3097,6 +3162,209 @@
                                 <button class="btn-secondary" style="flex:1" onclick="document.getElementById('stopBtn').click()">⏹ STOP AUDIO</button>`;
             tab.insertBefore(btnDiv, tab.firstChild);
         });
+
+        let composerGrid = Array(16).fill().map(() => Array(7).fill(false)); // [step][note]
+        
+        function initComposerGrid() {
+            const container = document.getElementById('composer-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            for (let note = 6; note >= 0; note--) {
+                const label = document.createElement('div');
+                label.style.cssText = "color: #888; font-size: 10px; display:flex; align-items:center; justify-content:flex-end; padding-right:5px;";
+                label.innerText = `N${note+1}`;
+                container.appendChild(label);
+                
+                for (let step = 0; step < 16; step++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'composer-cell';
+                    cell.dataset.step = step;
+                    cell.dataset.note = note;
+                    
+                    cell.style.cssText = `
+                        background: #111; 
+                        border: 1px solid #333; 
+                        height: 30px; 
+                        cursor: pointer;
+                        border-radius: 2px;
+                    `;
+                    if (step % 4 === 0) cell.style.borderLeft = "2px solid #555";
+                    if (composerGrid[step][note]) cell.style.background = 'var(--neon)';
+                    
+                    cell.onclick = () => {
+                        composerGrid[step][note] = !composerGrid[step][note];
+                        cell.style.background = composerGrid[step][note] ? 'var(--neon)' : '#111';
+                    };
+                    
+                    container.appendChild(cell);
+                }
+            }
+        }
+        initComposerGrid();
+
+        // Sync AI Composer Genre Dropdown
+        setTimeout(() => {
+            document.getElementById('aiComposerGenre').innerHTML = document.getElementById('genreSelect').innerHTML;
+            document.getElementById('aiComposerGenre').value = UI.genreSel.value;
+        }, 500);
+        
+        document.getElementById('aiComposerGenre')?.addEventListener('change', (e) => {
+            UI.genreSel.value = e.target.value;
+            deckState[activeDeck].genre = e.target.value;
+            loadGenre();
+        });
+
+        document.getElementById('aiComposeBtn')?.addEventListener('click', () => {
+            const gName = document.getElementById('aiComposerGenre').value;
+            if(!gName) { showToast("Please select a Genre first!"); return; }
+            
+            // Sync Master Controls
+            UI.genreSel.value = gName;
+            deckState[activeDeck].genre = gName;
+            loadGenre();
+            
+            // Map Drum Rhythm based on genre text
+            let rhythmType = 'house';
+            if (gName.includes('trap') || gName.includes('drill') || gName.includes('hiphop') || gName.includes('lofi') || gName.includes('reggae')) rhythmType = 'trap';
+            else if (gName.includes('dnb') || gName.includes('dubstep')) rhythmType = 'dnb';
+            else if (gName.includes('rock') || gName.includes('metal') || gName.includes('punk')) rhythmType = 'rock';
+            else if (gName.includes('breakbeat') || gName.includes('garage') || gName.includes('amapiano')) rhythmType = 'breakbeat';
+            loadRhythmPreset(rhythmType);
+            
+            // AI determines active layers
+            Mixer.lead.checked = Math.random() > 0.2;
+            Mixer.arp.checked = Math.random() > 0.5;
+            Mixer.chords.checked = Math.random() > 0.4;
+            Mixer.pad.checked = Math.random() > 0.6;
+            Mixer.bass.checked = true;
+            Mixer.sub.checked = Math.random() > 0.3;
+            Mixer.drums.checked = true;
+
+            // Euclidean Call and Response Engine
+            composerGrid = Array(16).fill().map(() => Array(7).fill(false));
+            
+            let density = 0.4; // House
+            if (gName.includes('techno') || gName.includes('trance')) density = 0.7; // Fast/Dense
+            if (gName.includes('trap') || gName.includes('lofi')) density = 0.25; // Sparse
+
+            // Euclidean rhythm algorithm (evenly spaces 'pulses' over 'steps')
+            const pulses = Math.max(1, Math.floor(16 * density)); 
+            const euclideanRhythm = [];
+            let bucket = 0;
+            for(let i=0; i<8; i++) { // Generate an 8-step rhythm pattern for the 'Call'
+                bucket += pulses;
+                if(bucket >= 8) {
+                    bucket -= 8;
+                    euclideanRhythm.push(true);
+                } else {
+                    euclideanRhythm.push(false);
+                }
+            }
+
+            // Generate "Call" Motif (Bars 1 and 2, Steps 0-7)
+            let callMotif = [];
+            let currentNote = Math.floor(Math.random() * 7);
+            for(let i=0; i<8; i++) {
+                if(euclideanRhythm[i]) {
+                    // Random walk with gravity towards center (note 3)
+                    let jump = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 3));
+                    if (currentNote > 4) jump -= 1; 
+                    if (currentNote < 2) jump += 1;
+                    
+                    currentNote += jump;
+                    if(currentNote < 0) currentNote = 0;
+                    if(currentNote > 6) currentNote = 6;
+                    
+                    callMotif.push(currentNote);
+                    composerGrid[i][currentNote] = true;
+                } else {
+                    callMotif.push(-1);
+                }
+            }
+
+            // Generate "Response" Motif (Bars 3 and 4, Steps 8-15)
+            // 3 Types of algebraic manipulation: Inversion, Shift, or Exact Copy
+            const responseType = Math.random();
+            let shiftAmount = Math.floor(Math.random() * 3) - 1; // -1, 0, 1
+
+            for(let i=0; i<8; i++) {
+                let note = callMotif[i];
+                if(note !== -1) {
+                    if (responseType < 0.33) {
+                        // Inversion around center note 3
+                        note = 3 + (3 - note); 
+                    } else if (responseType < 0.66) {
+                        // Pitch shift
+                        note += shiftAmount;
+                    } 
+                    // else exact copy
+
+                    // Resolve final note to root (0) or 5th (4) for a musical ending
+                    if (i === 7 || (i === 6 && callMotif[7] === -1)) {
+                        note = Math.random() > 0.5 ? 0 : 4;
+                    }
+
+                    if(note < 0) note = 0;
+                    if(note > 6) note = 6;
+                    
+                    composerGrid[i+8][note] = true;
+                }
+            }
+            
+            initComposerGrid();
+            showToast("AI created a Euclidean Call-and-Response pattern for " + document.getElementById('aiComposerGenre').options[document.getElementById('aiComposerGenre').selectedIndex].text + "!");
+        });
+
+        document.getElementById('clearComposerBtn')?.addEventListener('click', () => {
+            composerGrid = Array(16).fill().map(() => Array(7).fill(false));
+            initComposerGrid();
+            showToast("Composer Grid cleared.");
+        });
+
+        function applyUniversalTooltips() {
+            const tooltips = {
+                'masterClearBtn': 'Wipes out the entire session (all images, tabs, drum patterns, and grids).',
+                'saveSetupBtn': 'Downloads your complete studio configuration as a .json file.',
+                'recordBtn': 'Records the master audio output into a downloadable .webm file.',
+                'playBtn': 'Starts the main audio sequencer engine.',
+                'stopBtn': 'Stops the audio engine and kills all sound.',
+                
+                'imageUpload': 'Select one or more images from your device. Colors drive the synthesizers!',
+                'duplicateImgBtn': 'Copies the last image in the sequence to extend the pattern length.',
+                'saveSeqBtn': 'Saves the current image sequence pattern.',
+                'clearSeqBtn': 'Clears all images from the Slow Image Scroll tab.',
+                
+                'modeSelect': 'Determines how the sequencer scans pixels (Motion looks for movement, Colors/Rhythm looks for pixel data).',
+                'bpmSlider': 'Master Tempo (Beats Per Minute) controlling the speed of all tabs and drum loops.',
+                'macroFilter': 'Master Low-Pass filter controlling the overall brightness of the sound.',
+                
+                'mixLead': 'Toggles the Lead Synthesizer layer.',
+                'mixArp': 'Toggles the Arpeggiator layer.',
+                'mixChords': 'Toggles the Chord Synthesizer layer.',
+                'mixPad': 'Toggles the atmospheric Pad layer.',
+                'mixBass': 'Toggles the Bassline layer.',
+                'mixSub': 'Toggles the deep Sub Bass layer.',
+                'mixDrums': 'Toggles the Master Drum bus output.',
+                
+                'aiDirector': 'When active, the AI automatically manages the EQ filter sweep and introduces algorithmic drum fills/variations.',
+                'aiTempo': 'When active, the AI subtly speeds up and slows down the master BPM based on the visual intensity of the image sequence.',
+                
+                'rhythmLoopPreset': 'Instantly load a classic, genre-specific 16-step drum loop into the Live Rhythm Sequencer.',
+                'remixTargetGenre': 'Select the target style for your uploaded track. The AI will repitch and reconstruct it into this style.',
+                'remixUpload': 'Upload an existing audio track. The AI will extract its BPM and build a completely new rhythm around it.'
+            };
+
+            for(let id in tooltips) {
+                const el = document.getElementById(id);
+                if (el) el.title = tooltips[id];
+            }
+            
+            document.querySelectorAll('.eq-slider').forEach((el, index) => {
+                el.title = `Adjusts the volume of the ${['50Hz', '150Hz', '400Hz', '1kHz', '2.5kHz', '6kHz', '15kHz'][index] || ''} frequency band.`;
+            });
+        }
+        applyUniversalTooltips();
 
         requestAnimationFrame(drawVisualizerLoop);
     </script>
