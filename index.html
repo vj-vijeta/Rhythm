@@ -65,22 +65,30 @@
             .span-2-desktop {
                 grid-column: span 1 !important;
             }
+
             .tabs {
                 flex-wrap: wrap;
             }
+
             .tab-btn {
                 flex: 1 1 calc(50% - 5px);
                 font-size: 0.8rem;
                 padding: 10px 5px;
                 border-radius: 4px;
             }
+
             canvas {
                 height: 300px !important;
             }
+
             .display-wrapper {
                 height: 300px !important;
             }
-            #cam-canvas, #hybrid-canvas, #draw-canvas, #seq-canvas {
+
+            #cam-canvas,
+            #hybrid-canvas,
+            #draw-canvas,
+            #seq-canvas {
                 max-width: 100%;
             }
         }
@@ -570,8 +578,8 @@
             <button id="recordBtn" class="btn-record">🔴 Record Master</button>
             <a id="downloadLink"
                 style="display:none; color: var(--neon); font-size:0.8rem; text-decoration: underline;">Save .webm</a>
-            <button id="playBtn">▶ PLAY</button>
-            <button id="stopBtn">⏹ STOP</button>
+            <button id="playBtn" style="display:none;">▶ PLAY</button>
+            <button id="stopBtn" style="display:none;">⏹ STOP</button>
         </div>
     </div>
     <p class="subtitle">Macro-Sequencer, AI Orchestrator & The Formula of 4</p>
@@ -585,6 +593,7 @@
                 <button class="tab-btn" onclick="switchTab('tab-hybrid')">🖼️📷 Image + Live Cam</button>
                 <button class="tab-btn" onclick="switchTab('tab-draw')">🖌️ Draw Your Music</button>
                 <button class="tab-btn" onclick="switchTab('tab-vocals')">🎙️ Vocals & Mix</button>
+                <button class="tab-btn" onclick="switchTab('tab-remix')">🎛️ Genre Remixer</button>
             </div>
 
             <div id="tab-image" class="tab-content active">
@@ -594,7 +603,8 @@
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <input type="file" id="imageUpload" accept="image/*" multiple
                                 style="flex: 2 1 200px; padding: 6px;">
-                            <button id="duplicateImgBtn" class="btn-secondary" style="flex: 1 1 100px;">➕ Duplicate Last</button>
+                            <button id="duplicateImgBtn" class="btn-secondary" style="flex: 1 1 100px;">➕ Duplicate
+                                Last</button>
                             <button id="saveSeqBtn" style="flex: 1 1 100px;">💾 Save Pattern</button>
                             <button id="clearSeqBtn" class="btn-danger" style="flex: 1 1 100px;">🗑️ Clear</button>
                         </div>
@@ -610,6 +620,8 @@
                     <canvas id="seq-canvas" height="400" width="800"></canvas>
                     <div id="playhead-seq" class="playhead"></div>
                 </div>
+                <label style="display:block; margin-top:15px; margin-bottom:5px;">Rearrange Sequence</label>
+                <div id="thumb-container" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;"></div>
 
 
             </div>
@@ -633,7 +645,9 @@
                     </div>
                     <div class="control-item">
                         <label>Motion Zones</label>
-                        <select id="camZoneSelect" onchange="document.getElementById('hybridZoneSelect').value=this.value" style="padding: 10px;">
+                        <select id="camZoneSelect"
+                            onchange="document.getElementById('hybridZoneSelect').value=this.value"
+                            style="padding: 10px;">
                             <option value="6" selected>6 Zones (3x2)</option>
                             <option value="8">8 Zones (4x2)</option>
                             <option value="12">12 Zones (4x3)</option>
@@ -643,7 +657,8 @@
                     </div>
                     <div class="control-item">
                         <label>Motion Sensitivity</label>
-                        <input type="range" id="camMotionSens" min="10" max="150" step="5" value="70" oninput="document.getElementById('hybridMotionSens').value=this.value">
+                        <input type="range" id="camMotionSens" min="10" max="150" step="5" value="70"
+                            oninput="document.getElementById('hybridMotionSens').value=this.value">
                     </div>
                 </div>
                 <div class="display-wrapper" id="cam-wrapper" style="overflow: hidden;">
@@ -658,10 +673,13 @@
                     <div class="control-item span-2-desktop">
                         <label>Extended Music Scroll Builder</label>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <input type="file" id="imageUploadHybrid" accept="image/*" multiple style="flex: 2 1 200px; padding: 6px;">
-                            <button id="duplicateImgBtnHybrid" class="btn-secondary" style="flex: 1 1 100px;">➕ Duplicate Last</button>
+                            <input type="file" id="imageUploadHybrid" accept="image/*" multiple
+                                style="flex: 2 1 200px; padding: 6px;">
+                            <button id="duplicateImgBtnHybrid" class="btn-secondary" style="flex: 1 1 100px;">➕
+                                Duplicate Last</button>
                             <button id="saveSeqBtnHybrid" style="flex: 1 1 100px;">💾 Save</button>
-                            <button id="clearSeqBtnHybrid" class="btn-danger" style="flex: 1 1 100px;">🗑️ Clear</button>
+                            <button id="clearSeqBtnHybrid" class="btn-danger" style="flex: 1 1 100px;">🗑️
+                                Clear</button>
                         </div>
                     </div>
                     <div class="control-item">
@@ -681,7 +699,8 @@
                     </div>
                     <div class="control-item">
                         <label>Motion Zones</label>
-                        <select id="hybridZoneSelect" onchange="document.getElementById('camZoneSelect').value=this.value" style="padding: 10px;">
+                        <select id="hybridZoneSelect"
+                            onchange="document.getElementById('camZoneSelect').value=this.value" style="padding: 10px;">
                             <option value="6" selected>6 Zones (3x2)</option>
                             <option value="8">8 Zones (4x2)</option>
                             <option value="12">12 Zones (4x3)</option>
@@ -696,13 +715,16 @@
                     </div>
                     <div class="control-item">
                         <label>Motion Sensitivity</label>
-                        <input type="range" id="hybridMotionSens" min="10" max="150" step="5" value="70" oninput="document.getElementById('camMotionSens').value=this.value">
+                        <input type="range" id="hybridMotionSens" min="10" max="150" step="5" value="70"
+                            oninput="document.getElementById('camMotionSens').value=this.value">
                     </div>
                 </div>
                 <div class="display-wrapper" id="hybrid-wrapper">
                     <canvas id="hybrid-canvas" height="400" width="800"></canvas>
                     <div id="playhead-hybrid" class="playhead"></div>
                 </div>
+                <label style="display:block; margin-top:15px; margin-bottom:5px;">Rearrange Hybrid Sequence</label>
+                <div id="hybrid-thumb-container" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;"></div>
             </div>
 
             <div id="tab-draw" class="tab-content">
@@ -724,8 +746,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="display-wrapper" id="draw-wrapper" style="overflow: hidden;">
-                    <canvas id="draw-canvas" width="800" height="400"></canvas>
+                <div class="display-wrapper" id="draw-wrapper" style="overflow-x: auto; overflow-y: hidden; scroll-behavior: smooth;">
+                    <canvas id="draw-canvas" width="3200" height="400"></canvas>
                     <div id="playhead-draw" class="playhead"></div>
                 </div>
             </div>
@@ -736,17 +758,34 @@
                         <label>Voice Recording</label>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button id="initMicBtn" style="flex: 1 1 120px;">🎤 Connect Mic</button>
-                            <button id="recVocalBtn" class="btn-record" disabled style="flex: 1 1 120px;">🔴 Rec Take</button>
+                            <button id="recVocalBtn" class="btn-record" disabled style="flex: 1 1 120px;">🔴 Rec
+                                Take</button>
                         </div>
                     </div>
                     <div class="control-item" style="grid-column: span 1;">
                         <label>Import Audio/Webm to Mix</label>
-                        <input type="file" id="importMixBtn" accept="audio/*, video/webm" style="padding: 6px;">
+                        <input type="file" id="importMixBtn" accept="audio/*, video/*, .webm, .mp4, .m4a" style="padding: 6px;">
                     </div>
                 </div>
 
-                <div class="header-bar" style="margin-top: 15px; border-bottom:1px solid #333; padding-bottom:5px;">
+                <div class="control-grid" style="align-items: end; margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
+                    <div class="control-item span-2-desktop">
+                        <label>AI Voice Synthesis (TTS)</label>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <input type="text" id="aiVoiceText" placeholder="Type lyrics here..." style="flex: 2 1 200px; background: #1a1a24; color: var(--neon); border: 1px solid var(--neon); padding: 8px 12px; border-radius: 4px;">
+                            <select id="aiVoicePitch" style="flex: 1 1 80px;">
+                                <option value="1">Normal Pitch</option>
+                                <option value="0.5">Deep Pitch</option>
+                                <option value="1.5">High Pitch</option>
+                            </select>
+                            <button id="genAiVoiceBtn" class="btn-secondary" style="flex: 1 1 120px;">🤖 Generate Voice</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-bar" style="margin-top: 15px; border-bottom:1px solid #333; padding-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
                     <h3 style="font-size:0.9rem;">Multi-Track Mixer (Buffer Engine)</h3>
+                    <button class="btn-danger" style="padding:4px 8px; font-size:10px;" onclick="Object.keys(mixTracks).forEach(id => removeMixTrack(id));">🛑 Clear All Tracks</button>
                 </div>
 
                 <div id="mixTracksContainer"
@@ -754,20 +793,134 @@
                 </div>
             </div>
 
-            <div id="global-scroll-container">
-                <label style="display:block; margin-top:15px; margin-bottom:5px;">Rearrange Sequence</label>
-                <div id="thumb-container" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px;">
+            <div id="tab-remix" class="tab-content">
+                <div class="control-grid" style="align-items: end;">
+                    <div class="control-item span-2-desktop">
+                        <label>Original Song / Acapella</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="file" id="remixUpload" accept="audio/*" style="padding: 6px; flex:1;">
+                            <button class="btn-danger" style="flex:0 0 100px;" onclick="if(window.remixAudioSource){window.remixAudioSource.stop(); window.remixAudioSource=null;} document.getElementById('remixStatus').innerText='No track loaded.'; document.getElementById('remixUpload').value='';">🛑 Clear</button>
+                        </div>
+                    </div>
+                    <div class="control-item">
+                        <label>Original Song BPM</label>
+                        <input type="number" id="remixBpm" value="120" style="background: #1a1a24; color: var(--neon); border: 1px solid var(--neon); padding: 8px; border-radius: 4px;">
+                        <div id="remixBpmSuggestion" style="color: var(--neon); font-size: 0.8rem; margin-top: 4px;"></div>
+                    </div>
                 </div>
+                <div class="control-grid" style="align-items: end; margin-top: 10px;">
+                    <div class="control-item">
+                        <label>Filter Original Track</label>
+                        <select id="remixFilter">
+                            <option value="none">None (Full Mix)</option>
+                            <option value="lowpass">Muffled (Lowpass 500Hz)</option>
+                            <option value="highpass">Isolate Highs (Highpass 1kHz)</option>
+                            <option value="bandpass">Radio (Bandpass)</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label>Target AI Genre</label>
+                        <select id="remixTargetGenre" style="padding: 8px; background: #1a1a24; color: white;">
+                            <optgroup label="EDM & Club">
+                                <option value="house_deep">Deep House</option>
+                                <option value="house_tech">Tech House</option>
+                                <option value="amapiano">Amapiano</option>
+                                <option value="techno_peak">Peak Time Techno</option>
+                                <option value="techno_acid">Acid Techno</option>
+                                <option value="techno_minimal">Minimal Techno</option>
+                                <option value="hard_techno">Hard Techno</option>
+                                <option value="jumpstyle">Jumpstyle</option>
+                                <option value="schranz">Schranz (Hardcore)</option>
+                                <option value="techno_industrial">Industrial Techno</option>
+                                <option value="trance_uplifting">Uplifting Trance</option>
+                                <option value="psytrance">Psytrance (Full-On)</option>
+                                <option value="darkpsy">Darkpsy (High Speed)</option>
+                            </optgroup>
+                            <optgroup label="Bass Music & UK">
+                                <option value="dubstep">Dubstep / Riddim</option>
+                                <option value="dnb">Drum & Bass (Neuro)</option>
+                                <option value="uk_garage">UK Garage</option>
+                                <option value="trap">Electronic Trap</option>
+                            </optgroup>
+                            <optgroup label="Rock & Metal">
+                                <option value="rock_indie">Indie Rock</option>
+                                <option value="rock_grunge">Grunge</option>
+                                <option value="punk_pop">Pop-Punk</option>
+                                <option value="metal_thrash">Thrash Metal</option>
+                                <option value="metal_doom">Doom Metal</option>
+                            </optgroup>
+                            <optgroup label="Hip-Hop & Lo-Fi">
+                                <option value="hiphop_boombap">Boom Bap (Classic)</option>
+                                <option value="hiphop_drill">Drill (UK/Chicago)</option>
+                                <option value="hiphop_cloud">Cloud Rap</option>
+                                <option value="hiphop_gfunk">West Coast G-Funk</option>
+                                <option value="lofi_study">Lo-Fi Beats to Study To</option>
+                            </optgroup>
+                            <optgroup label="Pop & Synth">
+                                <option value="pop_synth">Synth-Pop (80s)</option>
+                                <option value="pop_dance">Dance-Pop</option>
+                                <option value="hyperpop">Hyperpop</option>
+                                <option value="kpop">K-Pop Style</option>
+                            </optgroup>
+                            <optgroup label="Jazz & Blues">
+                                <option value="blues_delta">Delta Blues</option>
+                                <option value="blues_chicago">Chicago Electric Blues</option>
+                                <option value="jazz_swing">Swing / Big Band</option>
+                                <option value="jazz_bebop">Bebop</option>
+                            </optgroup>
+                            <optgroup label="R&B, Soul & Funk">
+                                <option value="soul_classic">Classic Soul</option>
+                                <option value="soul_neo">Neo-Soul</option>
+                                <option value="funk">Funk (Slap Bass)</option>
+                                <option value="motown">Motown Groove</option>
+                            </optgroup>
+                            <optgroup label="Reggae & Caribbean">
+                                <option value="reggae_roots">Roots Reggae</option>
+                                <option value="dancehall">Dancehall</option>
+                                <option value="reggaeton">Reggaeton</option>
+                                <option value="ska">Ska</option>
+                            </optgroup>
+                            <optgroup label="Country & Folk">
+                                <option value="country_outlaw">Outlaw Country</option>
+                                <option value="bluegrass">Bluegrass</option>
+                                <option value="folk_celtic">Celtic Folk</option>
+                            </optgroup>
+                            <optgroup label="Classical & Orchestral">
+                                <option value="classical_baroque">Baroque (Harpsichord)</option>
+                                <option value="classical_romantic">Romantic Orchestra</option>
+                                <option value="cinematic">Cinematic Score</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label>Original Track Volume</label>
+                        <input type="range" id="remixVol" min="0" max="2" step="0.05" value="0.8">
+                    </div>
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button id="remixPlayBtn" class="btn-secondary" style="flex: 1 1 200px;">▶ Play Remix Mashup</button>
+                    <button id="remixSyncUpBtn" style="padding: 8px;">+ Nudge Sync</button>
+                    <button id="remixSyncDownBtn" style="padding: 8px;">- Nudge Sync</button>
+                </div>
+                <div id="remixStatus" style="margin-top: 10px; color: var(--neon-warn); font-size: 0.9rem;">No track loaded.</div>
             </div>
 
-            <div class="header-bar" style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+
+
+            <div class="header-bar"
+                style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                 <h3>Global Culture, Mixer & Multi-Layer Engine</h3>
-                
-                <div id="deckToggleContainer" style="display: none; background: #1a1a24; border-radius: 6px; overflow: hidden; border: 1px solid #333; margin: 10px 0;">
-                    <button id="deckABtn" onclick="switchDeck('A')" style="padding: 10px 20px; background: var(--neon); color: black; border: none; font-weight: bold; cursor: pointer;">DECK A (Image)</button>
-                    <button id="deckBBtn" onclick="switchDeck('B')" style="padding: 10px 20px; background: transparent; color: #888; border: none; font-weight: bold; cursor: pointer;">DECK B (Live Cam)</button>
+
+                <div id="deckToggleContainer"
+                    style="display: none; background: #1a1a24; border-radius: 6px; overflow: hidden; border: 1px solid #333; margin: 10px 0;">
+                    <button id="deckABtn" onclick="switchDeck('A')"
+                        style="padding: 10px 20px; background: var(--neon); color: black; border: none; font-weight: bold; cursor: pointer;">DECK
+                        A (Image)</button>
+                    <button id="deckBBtn" onclick="switchDeck('B')"
+                        style="padding: 10px 20px; background: transparent; color: #888; border: none; font-weight: bold; cursor: pointer;">DECK
+                        B (Live Cam)</button>
                 </div>
-                
+
                 <div class="control-item" style="width: 200px;">
                     <label>Tempo (BPM) <span id="bpmVal" class="value-display">125</span></label>
                     <input type="range" id="bpmSlider" min="50" max="220" value="125">
@@ -913,39 +1066,61 @@
 
             </div>
 
-            <label style="display: block; margin-top: 15px;">Live Rhythm Sequencer (1 Bar Loop)</label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 15px;">
+                <label>Live Rhythm Sequencer (1 Bar Loop)</label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <select id="rhythmLoopPreset" onchange="loadRhythmPreset(this.value); this.value='';" style="padding: 4px; font-size: 10px; background: #1a1a24; color: var(--neon); border: 1px solid var(--neon); border-radius: 4px;">
+                        <option value="">-- Load Preset Loop --</option>
+                        <option value="house">House (4-on-floor)</option>
+                        <option value="trap">Trap Beat</option>
+                        <option value="dnb">Drum & Bass</option>
+                        <option value="breakbeat">Breakbeat</option>
+                        <option value="rock">Rock Beat</option>
+                    </select>
+                    <button class="btn-danger" style="padding:4px 8px; font-size:10px;" onclick="loadRhythmPreset('clear');">🛑 Clear / Stop</button>
+                    <button class="btn-secondary" style="padding:4px 8px; font-size:10px;" onclick="const grid = document.querySelector('.rhythm-grid'); grid.style.display = grid.style.display === 'none' ? 'block' : 'none';">👁️ Toggle Grid</button>
+                </div>
+            </div>
             <div class="rhythm-grid">
                 <div class="rhythm-row">
                     <div class="rhythm-label">KICK</div>
                     <div id="gridKick" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('kick')" title="AI Generate KICK">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">SNARE</div>
                     <div id="gridSnare" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('snare')" title="AI Generate SNARE">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">HI-HAT</div>
                     <div id="gridHihat" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('hihat')" title="AI Generate HI-HAT">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">PERC</div>
                     <div id="gridPerc" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('perc')" title="AI Generate PERC">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">CLAP</div>
                     <div id="gridClap" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('clap')" title="AI Generate CLAP">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">O.HAT</div>
                     <div id="gridOpenHat" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('open_hat')" title="AI Generate O.HAT">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">CRASH</div>
                     <div id="gridCrash" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('crash')" title="AI Generate CRASH">🤖</button>
                 </div>
                 <div class="rhythm-row">
                     <div class="rhythm-label">SUB</div>
                     <div id="gridSub" style="display: flex; flex: 1; gap: 2px;"></div>
+                    <button class="btn-secondary" style="padding:2px 5px; font-size:10px; cursor:pointer;" onclick="aiGenerateDrum('sub')" title="AI Generate SUB">🤖</button>
                 </div>
             </div>
 
@@ -1102,63 +1277,63 @@
         const cloneInst = (type) => JSON.parse(JSON.stringify(instBase[type]));
 
         const genres = {
-            house_deep: { name: "Deep House", desc: "Soulful, atmospheric 4/4 groove.", bpm: 122, scale: scales.minor, progression: [0, 2, 4, 5], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            house_tech: { name: "Tech House", desc: "Minimal house with techno basslines.", bpm: 126, scale: scales.min_pent, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            amapiano: { name: "Amapiano", desc: "South African house.", bpm: 113, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            techno_peak: { name: "Peak Time Techno", desc: "Driving, huge warehouse sound.", bpm: 132, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            techno_acid: { name: "Acid Techno", desc: "Squelching 303 basslines.", bpm: 135, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('acid'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            techno_minimal: { name: "Minimal Techno", desc: "Stripped back clicks and subs.", bpm: 125, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            hard_techno: { name: "Hard Techno", desc: "Fast, aggressive, distorted kicks.", bpm: 150, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('industrial'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1], perc: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            jumpstyle: { name: "Jumpstyle", desc: "Bouncy distorted off-beat bass and fast kicks.", bpm: 145, scale: scales.minor, progression: [0, -2, 0, 3], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            schranz: { name: "Schranz", desc: "Hard, fast, heavily distorted rhythmic loops.", bpm: 155, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('schranz'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            techno_industrial: { name: "Industrial Techno", desc: "Harsh, distorted, metallic.", bpm: 130, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('industrial'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            trance_uplifting: { name: "Uplifting Trance", desc: "Epic supersaw melodies.", bpm: 138, scale: scales.minor, progression: [0, 5, 3, 4], instruments: cloneInst('trance'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            psytrance: { name: "Psytrance", desc: "Alien textures, rolling bass.", bpm: 145, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('psy'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            darkpsy: { name: "Darkpsy", desc: "Ultra-fast, dark harmonic scales.", bpm: 160, scale: scales.harmonic_minor, progression: [0, 1, 0, -1], instruments: cloneInst('psy'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            dubstep: { name: "Dubstep", desc: "140 BPM half-time wobble bass.", bpm: 140, scale: scales.minor, progression: [0, 0, -2, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            dnb: { name: "Drum & Bass", desc: "Fast 174 BPM breakbeats.", bpm: 174, scale: scales.minor, progression: [0, 0, 3, 5], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            uk_garage: { name: "UK Garage", desc: "Swung, bouncy bass music.", bpm: 130, scale: scales.minor, progression: [0, 3, 4, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            trap: { name: "Electronic Trap", desc: "Huge 808s, EDM builds.", bpm: 145, scale: scales.harmonic_minor, progression: [0, 0, 5, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            house_deep: { name: "Deep House", desc: "Soulful, atmospheric 4/4 groove.", bpm: 122, scale: scales.minor, progression: [0, 2, 4, 5], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            house_tech: { name: "Tech House", desc: "Minimal house with techno basslines.", bpm: 126, scale: scales.min_pent, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            amapiano: { name: "Amapiano", desc: "South African house.", bpm: 113, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            techno_peak: { name: "Peak Time Techno", desc: "Driving, huge warehouse sound.", bpm: 132, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            techno_acid: { name: "Acid Techno", desc: "Squelching 303 basslines.", bpm: 135, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('acid'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            techno_minimal: { name: "Minimal Techno", desc: "Stripped back clicks and subs.", bpm: 125, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            hard_techno: { name: "Hard Techno", desc: "Fast, aggressive, distorted kicks.", bpm: 150, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('industrial'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1], perc: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            jumpstyle: { name: "Jumpstyle", desc: "Bouncy distorted off-beat bass and fast kicks.", bpm: 145, scale: scales.minor, progression: [0, -2, 0, 3], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            schranz: { name: "Schranz", desc: "Hard, fast, heavily distorted rhythmic loops.", bpm: 155, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('schranz'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            techno_industrial: { name: "Industrial Techno", desc: "Harsh, distorted, metallic.", bpm: 130, scale: scales.minor, progression: [0, 0, 0, 0], instruments: cloneInst('industrial'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            trance_uplifting: { name: "Uplifting Trance", desc: "Epic supersaw melodies.", bpm: 138, scale: scales.minor, progression: [0, 5, 3, 4], instruments: cloneInst('trance'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            psytrance: { name: "Psytrance", desc: "Alien textures, rolling bass.", bpm: 145, scale: scales.phrygian_dom, progression: [0, 0, 0, 0], instruments: cloneInst('psy'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            darkpsy: { name: "Darkpsy", desc: "Ultra-fast, dark harmonic scales.", bpm: 160, scale: scales.harmonic_minor, progression: [0, 1, 0, -1], instruments: cloneInst('psy'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            dubstep: { name: "Dubstep", desc: "140 BPM half-time wobble bass.", bpm: 140, scale: scales.minor, progression: [0, 0, -2, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            dnb: { name: "Drum & Bass", desc: "Fast 174 BPM breakbeats.", bpm: 174, scale: scales.minor, progression: [0, 0, 3, 5], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            uk_garage: { name: "UK Garage", desc: "Swung, bouncy bass music.", bpm: 130, scale: scales.minor, progression: [0, 3, 4, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0], perc: [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            trap: { name: "Electronic Trap", desc: "Huge 808s, EDM builds.", bpm: 145, scale: scales.harmonic_minor, progression: [0, 0, 5, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            rock_indie: { name: "Indie Rock", desc: "Acoustic/electric mix, clean beats.", bpm: 120, scale: scales.major, progression: [0, 4, 5, 3], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            rock_grunge: { name: "Grunge", desc: "Distorted angst, loud/quiet dynamics.", bpm: 110, scale: scales.minor, progression: [0, 3, 5, 3], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            punk_pop: { name: "Pop-Punk", desc: "Fast, energetic, power chords.", bpm: 160, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            metal_thrash: { name: "Thrash Metal", desc: "Aggressive, double-kick drums.", bpm: 180, scale: scales.harmonic_minor, progression: [0, 1, 0, 3], instruments: cloneInst('heavy'), rhythm: { kick: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            metal_doom: { name: "Doom Metal", desc: "Extremely slow, crushing walls of sound.", bpm: 70, scale: scales.minor, progression: [0, -1, -2, 0], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            rock_indie: { name: "Indie Rock", desc: "Acoustic/electric mix, clean beats.", bpm: 120, scale: scales.major, progression: [0, 4, 5, 3], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            rock_grunge: { name: "Grunge", desc: "Distorted angst, loud/quiet dynamics.", bpm: 110, scale: scales.minor, progression: [0, 3, 5, 3], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            punk_pop: { name: "Pop-Punk", desc: "Fast, energetic, power chords.", bpm: 160, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            metal_thrash: { name: "Thrash Metal", desc: "Aggressive, double-kick drums.", bpm: 180, scale: scales.harmonic_minor, progression: [0, 1, 0, 3], instruments: cloneInst('heavy'), rhythm: { kick: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            metal_doom: { name: "Doom Metal", desc: "Extremely slow, crushing walls of sound.", bpm: 70, scale: scales.minor, progression: [0, -1, -2, 0], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            hiphop_boombap: { name: "Boom Bap", desc: "90s East Coast, acoustic samples.", bpm: 90, scale: scales.min_pent, progression: [0, 0, 3, 0], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            hiphop_drill: { name: "Drill", desc: "Sliding 808s, syncopated off-beat snares.", bpm: 140, scale: scales.harmonic_minor, progression: [0, 0, 0, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], hihat: [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            hiphop_cloud: { name: "Cloud Rap", desc: "Ethereal, lush pads, slow beats.", bpm: 110, scale: scales.major, progression: [0, 4, 0, 5], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            hiphop_gfunk: { name: "G-Funk", desc: "West Coast, high sine leads.", bpm: 95, scale: scales.minor, progression: [0, -2, 0, -2], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            lofi_study: { name: "Lo-Fi Beats", desc: "Dusty tape emulation, chill beats.", bpm: 85, scale: scales.maj_pent, progression: [0, 4, 5, 4], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            hiphop_boombap: { name: "Boom Bap", desc: "90s East Coast, acoustic samples.", bpm: 90, scale: scales.min_pent, progression: [0, 0, 3, 0], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            hiphop_drill: { name: "Drill", desc: "Sliding 808s, syncopated off-beat snares.", bpm: 140, scale: scales.harmonic_minor, progression: [0, 0, 0, 0], instruments: cloneInst('bass_music'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], hihat: [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            hiphop_cloud: { name: "Cloud Rap", desc: "Ethereal, lush pads, slow beats.", bpm: 110, scale: scales.major, progression: [0, 4, 0, 5], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            hiphop_gfunk: { name: "G-Funk", desc: "West Coast, high sine leads.", bpm: 95, scale: scales.minor, progression: [0, -2, 0, -2], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            lofi_study: { name: "Lo-Fi Beats", desc: "Dusty tape emulation, chill beats.", bpm: 85, scale: scales.maj_pent, progression: [0, 4, 5, 4], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            pop_synth: { name: "Synth-Pop", desc: "80s nostalgia, bright analog synths.", bpm: 115, scale: scales.major, progression: [0, 5, 3, 4], instruments: cloneInst('synthwave'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            pop_dance: { name: "Dance-Pop", desc: "Modern top 40 radio hits.", bpm: 120, scale: scales.minor, progression: [0, -2, 3, 4], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            hyperpop: { name: "Hyperpop", desc: "Glitchy, extremely fast, pitch-shifted.", bpm: 160, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('synthwave'), rhythm: { kick: [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            kpop: { name: "K-Pop", desc: "High production value, genre-blending.", bpm: 125, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            pop_synth: { name: "Synth-Pop", desc: "80s nostalgia, bright analog synths.", bpm: 115, scale: scales.major, progression: [0, 5, 3, 4], instruments: cloneInst('synthwave'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            pop_dance: { name: "Dance-Pop", desc: "Modern top 40 radio hits.", bpm: 120, scale: scales.minor, progression: [0, -2, 3, 4], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            hyperpop: { name: "Hyperpop", desc: "Glitchy, extremely fast, pitch-shifted.", bpm: 160, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('synthwave'), rhythm: { kick: [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            kpop: { name: "K-Pop", desc: "High production value, genre-blending.", bpm: 125, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            blues_delta: { name: "Delta Blues", desc: "Acoustic, bare, narrative.", bpm: 75, scale: scales.blues, progression: [0, 0, 3, 4], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            blues_chicago: { name: "Chicago Blues", desc: "Electric guitars, bar band feel.", bpm: 90, scale: scales.blues, progression: [0, 0, 3, 4], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            jazz_swing: { name: "Swing", desc: "Big band, walking bass.", bpm: 110, scale: scales.major, progression: [0, 1, 4, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            jazz_bebop: { name: "Bebop", desc: "Fast, complex chord changes.", bpm: 150, scale: scales.chromatic, progression: [0, 2, 4, 5], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0], snare: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], hihat: [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            blues_delta: { name: "Delta Blues", desc: "Acoustic, bare, narrative.", bpm: 75, scale: scales.blues, progression: [0, 0, 3, 4], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            blues_chicago: { name: "Chicago Blues", desc: "Electric guitars, bar band feel.", bpm: 90, scale: scales.blues, progression: [0, 0, 3, 4], instruments: cloneInst('heavy'), rhythm: { kick: [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            jazz_swing: { name: "Swing", desc: "Big band, walking bass.", bpm: 110, scale: scales.major, progression: [0, 1, 4, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            jazz_bebop: { name: "Bebop", desc: "Fast, complex chord changes.", bpm: 150, scale: scales.chromatic, progression: [0, 2, 4, 5], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0], snare: [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0], hihat: [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            soul_classic: { name: "Classic Soul", desc: "Smooth vocals, brass, and bass.", bpm: 95, scale: scales.major, progression: [0, 5, 4, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            soul_neo: { name: "Neo-Soul", desc: "Modern R&B, jazzy chords, laid back.", bpm: 85, scale: scales.dorian, progression: [0, 3, 4, 0], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            funk: { name: "Funk", desc: "Slap bass, syncopation, horns.", bpm: 105, scale: scales.dorian, progression: [0, 0, 3, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            motown: { name: "Motown", desc: "Pop-soul groove.", bpm: 110, scale: scales.major, progression: [0, 5, 3, 4], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            soul_classic: { name: "Classic Soul", desc: "Smooth vocals, brass, and bass.", bpm: 95, scale: scales.major, progression: [0, 5, 4, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            soul_neo: { name: "Neo-Soul", desc: "Modern R&B, jazzy chords, laid back.", bpm: 85, scale: scales.dorian, progression: [0, 3, 4, 0], instruments: cloneInst('lofi'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            funk: { name: "Funk", desc: "Slap bass, syncopation, horns.", bpm: 105, scale: scales.dorian, progression: [0, 0, 3, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], perc: [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            motown: { name: "Motown", desc: "Pop-soul groove.", bpm: 110, scale: scales.major, progression: [0, 5, 3, 4], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            reggae_roots: { name: "Roots Reggae", desc: "Deep bass, offbeat skanks.", bpm: 135, scale: scales.minor, progression: [0, 0, 5, 5], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            dancehall: { name: "Dancehall", desc: "Upbeat Jamaican club music.", bpm: 100, scale: scales.minor, progression: [0, 0, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            reggaeton: { name: "Reggaeton", desc: "Latin club staple, Tresillo beat.", bpm: 95, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            ska: { name: "Ska", desc: "Fast, walking bass, energetic brass.", bpm: 160, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            reggae_roots: { name: "Roots Reggae", desc: "Deep bass, offbeat skanks.", bpm: 135, scale: scales.minor, progression: [0, 0, 5, 5], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            dancehall: { name: "Dancehall", desc: "Upbeat Jamaican club music.", bpm: 100, scale: scales.minor, progression: [0, 0, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            reggaeton: { name: "Reggaeton", desc: "Latin club staple, Tresillo beat.", bpm: 95, scale: scales.minor, progression: [0, 5, 4, 0], instruments: cloneInst('electronic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            ska: { name: "Ska", desc: "Fast, walking bass, energetic brass.", bpm: 160, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            country_outlaw: { name: "Outlaw Country", desc: "Guitars, storytelling.", bpm: 100, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            bluegrass: { name: "Bluegrass", desc: "Fast acoustic picking.", bpm: 140, scale: scales.mixolydian, progression: [0, 3, 4, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            folk_celtic: { name: "Celtic Folk", desc: "Traditional Irish/Scottish melodies.", bpm: 115, scale: scales.dorian, progression: [0, -2, 0, 5], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+            country_outlaw: { name: "Outlaw Country", desc: "Guitars, storytelling.", bpm: 100, scale: scales.major, progression: [0, 4, 5, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            bluegrass: { name: "Bluegrass", desc: "Fast acoustic picking.", bpm: 140, scale: scales.mixolydian, progression: [0, 3, 4, 0], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            folk_celtic: { name: "Celtic Folk", desc: "Traditional Irish/Scottish melodies.", bpm: 115, scale: scales.dorian, progression: [0, -2, 0, 5], instruments: cloneInst('acoustic'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
 
-            classical_baroque: { name: "Baroque", desc: "Ornate harpsichords.", bpm: 90, scale: scales.minor, progression: [0, 4, 5, 0], instruments: cloneInst('orchestral'), rhythm: { kick: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            classical_romantic: { name: "Romantic", desc: "Huge emotive orchestras.", bpm: 75, scale: scales.major, progression: [0, 5, 3, 4], instruments: cloneInst('orchestral'), rhythm: { kick: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
-            cinematic: { name: "Cinematic Score", desc: "Modern film music.", bpm: 80, scale: scales.minor, progression: [0, 5, -2, -1], instruments: cloneInst('orchestral'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], open_hat: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], crash: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], sub: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } }
+            classical_baroque: { name: "Baroque", desc: "Ornate harpsichords.", bpm: 90, scale: scales.minor, progression: [0, 4, 5, 0], instruments: cloneInst('orchestral'), rhythm: { kick: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            classical_romantic: { name: "Romantic", desc: "Huge emotive orchestras.", bpm: 75, scale: scales.major, progression: [0, 5, 3, 4], instruments: cloneInst('orchestral'), rhythm: { kick: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } },
+            cinematic: { name: "Cinematic Score", desc: "Modern film music.", bpm: 80, scale: scales.minor, progression: [0, 5, -2, -1], instruments: cloneInst('orchestral'), rhythm: { kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], hihat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], perc: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], open_hat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], crash: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], sub: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] } }
         };
 
         Object.values(genres).forEach(g => {
@@ -1167,7 +1342,7 @@
             });
         });
 
-        
+        const originalGenres = JSON.parse(JSON.stringify(genres));
 
         // --- GLOBAL STATE ---
         const UI = {
@@ -1200,7 +1375,7 @@
             document.getElementById('deckABtn').style.color = deckId === 'A' ? 'black' : '#888';
             document.getElementById('deckBBtn').style.background = deckId === 'B' ? 'var(--neon)' : 'transparent';
             document.getElementById('deckBBtn').style.color = deckId === 'B' ? 'black' : '#888';
-            
+
             UI.genreSel.value = deckState[activeDeck].genre;
             loadGenre();
         }
@@ -1224,6 +1399,7 @@
         const video = document.getElementById('video');
 
         let seqImages = [];
+        let hybridImages = [];
         let drawUndoStack = []; let drawRedoStack = []; let isDrawing = false;
 
         function getActiveCanvas() {
@@ -1236,22 +1412,6 @@
         // --- TAB & UI LOGIC ---
         function switchTab(tabId) {
             if (currentTab === tabId) return;
-
-            if (isPlaying || isRecording) {
-                document.getElementById('stopBtn').click();
-                if (isRecording) document.getElementById('recordBtn').click();
-                
-                const wantsToSave = confirm("You are switching tabs. Would you like to save your current project before proceeding?");
-                if (wantsToSave) {
-                    document.getElementById('saveSetupBtn').click();
-                }
-            }
-
-            if (tabId === 'tab-image' || tabId === 'tab-hybrid') {
-                document.getElementById('global-scroll-container').style.display = 'block';
-            } else {
-                document.getElementById('global-scroll-container').style.display = 'none';
-            }
 
             if (tabId === 'tab-hybrid') {
                 document.getElementById('deckToggleContainer').style.display = 'flex';
@@ -1276,7 +1436,7 @@
             const hGrid = document.getElementById('gridHihat'); const pGrid = document.getElementById('gridPerc');
             const cGrid = document.getElementById('gridClap'); const ohGrid = document.getElementById('gridOpenHat');
             const crGrid = document.getElementById('gridCrash'); const subGrid = document.getElementById('gridSub');
-            
+
             kGrid.innerHTML = ''; sGrid.innerHTML = ''; hGrid.innerHTML = ''; pGrid.innerHTML = '';
             cGrid.innerHTML = ''; ohGrid.innerHTML = ''; crGrid.innerHTML = ''; subGrid.innerHTML = '';
 
@@ -1314,6 +1474,28 @@
             document.querySelectorAll('.openhat-step').forEach((el, i) => el.classList.toggle('active', g.rhythm.open_hat[i]));
             document.querySelectorAll('.crash-step').forEach((el, i) => el.classList.toggle('active', g.rhythm.crash[i]));
             document.querySelectorAll('.sub-step').forEach((el, i) => el.classList.toggle('active', g.rhythm.sub[i]));
+        }
+
+        function aiGenerateDrum(track) {
+            const g = genres[UI.genreSel.value];
+            if (!g || !g.rhythm[track]) return;
+            
+            const density = Math.random() * 0.4 + 0.1; // Base probability 10% to 50%
+            for (let i = 0; i < 16; i++) {
+                let prob = density;
+                
+                // Add genre/rhythmic weight
+                if (track === 'kick' && i % 4 === 0) prob += 0.5;
+                if (track === 'snare' && (i === 4 || i === 12)) prob += 0.6;
+                if (track === 'hihat' && i % 2 === 0) prob += 0.3;
+                if (track === 'clap' && (i === 4 || i === 12)) prob += 0.4;
+                if (track === 'open_hat' && i % 4 === 2) prob += 0.5;
+                if (track === 'sub' && i % 4 === 0) prob += 0.3;
+                
+                g.rhythm[track][i] = Math.random() < prob ? 1 : 0;
+            }
+            loadRhythmToUI();
+            showToast(`AI generated new pattern for ${track.toUpperCase()}`);
         }
 
         // --- LAYER MANAGER UI ---
@@ -1356,6 +1538,9 @@
                         <div class="control-item"><label>Cut <span class="value-display">${layer.cut}</span></label><input type="range" min="100" max="10000" step="100" value="${layer.cut}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'cut', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
                         <div class="control-item"><label>Rev <span class="value-display">${layer.rev.toFixed(2)}</span></label><input type="range" min="0" max="1" step="0.05" value="${layer.rev}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'rev', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
                         <div class="control-item"><label>Delay <span class="value-display">${layer.del.toFixed(2)}</span></label><input type="range" min="0" max="1" step="0.05" value="${layer.del}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'del', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
+                        <div class="control-item"><label>EQ Low <span class="value-display">${(layer.eqLow || 0).toFixed(1)}</span></label><input type="range" min="-12" max="12" step="0.5" value="${layer.eqLow || 0}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'eqLow', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
+                        <div class="control-item"><label>EQ Mid <span class="value-display">${(layer.eqMid || 0).toFixed(1)}</span></label><input type="range" min="-12" max="12" step="0.5" value="${layer.eqMid || 0}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'eqMid', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
+                        <div class="control-item"><label>EQ High <span class="value-display">${(layer.eqHigh || 0).toFixed(1)}</span></label><input type="range" min="-12" max="12" step="0.5" value="${layer.eqHigh || 0}" oninput="updateLayer('${UI.instSel.value}', ${idx}, 'eqHigh', this.value); this.previousElementSibling.querySelector('span').innerText=this.value;"></div>
                     </div>
                 `;
                 UI.layerContainer.appendChild(card);
@@ -1418,7 +1603,7 @@
         function loadGenre() {
             const g = genres[deckState[activeDeck].genre];
             document.getElementById('infoTitle').innerText = g.name; document.getElementById('infoDesc').innerText = g.desc;
-            
+
             if (activeDeck === 'A') {
                 UI.bpm.value = g.bpm; document.getElementById('bpmVal').innerText = g.bpm;
             }
@@ -1543,7 +1728,7 @@
             for (let i = 0; i < n; ++i) {
                 let x = i * 2 / n - 1;
                 let x_abs = Math.abs(x);
-                curve[i] = x > 0 ? (1 - Math.exp(-x * k)) : -(1 - Math.exp(-x_abs * (k/2.0)));
+                curve[i] = x > 0 ? (1 - Math.exp(-x * k)) : -(1 - Math.exp(-x_abs * (k / 2.0)));
             }
             return curve;
         }
@@ -1812,8 +1997,8 @@
             const isHouse = gName.includes('house') || gName.includes('techno');
 
             if (isKick) {
-                const kOsc = ctx.createOscillator(); const kEnv = ctx.createGain(); 
-                
+                const kOsc = ctx.createOscillator(); const kEnv = ctx.createGain();
+
                 if (gName.includes('schranz')) {
                     kOsc.type = 'sine'; kOsc.frequency.setValueAtTime(150, time); kOsc.frequency.exponentialRampToValueAtTime(50, time + 0.1);
                     kEnv.gain.setValueAtTime(1.5, time); kEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.6);
@@ -1826,12 +2011,12 @@
                     kOsc.type = 'sine'; kOsc.frequency.setValueAtTime(120, time); kOsc.frequency.exponentialRampToValueAtTime(40, time + 0.05);
                     kEnv.gain.setValueAtTime(1.2, time); kEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
                     kOsc.connect(kEnv); kEnv.connect(masterGain);
-                    
+
                     const rFilt = ctx.createBiquadFilter(); rFilt.type = 'lowpass'; rFilt.frequency.value = 150;
                     const rDel = ctx.createDelay(1.0); rDel.delayTime.value = 0.15;
                     const rGain = ctx.createGain(); rGain.gain.value = 0.8;
                     kEnv.connect(rDel); rDel.connect(rFilt); rFilt.connect(rGain); rGain.connect(masterGain);
-                    
+
                     kOsc.start(time); kOsc.stop(time + 0.5);
                 } else {
                     kOsc.connect(kEnv); kEnv.connect(masterGain);
@@ -1883,38 +2068,38 @@
                     pOsc.connect(pEnv); pEnv.connect(masterGain); pOsc.start(time); pOsc.stop(time + 0.1);
                 }
             }
+
+
+        if (isClap) {
+            const bSize = ctx.sampleRate * 0.15; const buf = ctx.createBuffer(1, bSize, ctx.sampleRate);
+            const data = buf.getChannelData(0); for (let i = 0; i < bSize; i++) data[i] = Math.random() * 2 - 1;
+            const nSrc = ctx.createBufferSource(); nSrc.buffer = buf;
+            const nFilt = ctx.createBiquadFilter(); nFilt.type = 'bandpass'; nFilt.frequency.value = 1200; nFilt.Q.value = 1.5;
+            const nEnv = ctx.createGain(); nEnv.gain.setValueAtTime(0.8, time); nEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+            nSrc.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(masterGain); nSrc.start(time);
         }
-
-
-            if (isClap) {
-                const bSize = ctx.sampleRate * 0.15; const buf = ctx.createBuffer(1, bSize, ctx.sampleRate);
-                const data = buf.getChannelData(0); for (let i = 0; i < bSize; i++) data[i] = Math.random() * 2 - 1;
-                const nSrc = ctx.createBufferSource(); nSrc.buffer = buf;
-                const nFilt = ctx.createBiquadFilter(); nFilt.type = 'bandpass'; nFilt.frequency.value = 1200; nFilt.Q.value = 1.5;
-                const nEnv = ctx.createGain(); nEnv.gain.setValueAtTime(0.8, time); nEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
-                nSrc.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(masterGain); nSrc.start(time);
-            }
-            if (isOpenHat) {
-                const bSize = ctx.sampleRate * 0.3; const buf = ctx.createBuffer(1, bSize, ctx.sampleRate);
-                const data = buf.getChannelData(0); for (let i = 0; i < bSize; i++) data[i] = Math.random() * 2 - 1;
-                const nSrc = ctx.createBufferSource(); nSrc.buffer = buf;
-                const nFilt = ctx.createBiquadFilter(); nFilt.type = 'highpass'; nFilt.frequency.value = 6000;
-                const nEnv = ctx.createGain(); nEnv.gain.setValueAtTime(0.4, time); nEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
-                nSrc.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(masterGain); nSrc.start(time);
-            }
-            if (isCrash) {
-                const bSize = ctx.sampleRate * 1.5; const buf = ctx.createBuffer(1, bSize, ctx.sampleRate);
-                const data = buf.getChannelData(0); for (let i = 0; i < bSize; i++) data[i] = Math.random() * 2 - 1;
-                const nSrc = ctx.createBufferSource(); nSrc.buffer = buf;
-                const nFilt = ctx.createBiquadFilter(); nFilt.type = 'highpass'; nFilt.frequency.value = 4000;
-                const nEnv = ctx.createGain(); nEnv.gain.setValueAtTime(0.6, time); nEnv.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
-                nSrc.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(masterGain); nSrc.start(time);
-            }
-            if (isSub) {
-                const kOsc = ctx.createOscillator(); kOsc.type = 'sine'; kOsc.frequency.setValueAtTime(50, time);
-                const kEnv = ctx.createGain(); kEnv.gain.setValueAtTime(0.8, time); kEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.6);
-                kOsc.connect(kEnv); kEnv.connect(masterGain); kOsc.start(time); kOsc.stop(time + 0.7);
-            }
+        if (isOpenHat) {
+            const bSize = ctx.sampleRate * 0.3; const buf = ctx.createBuffer(1, bSize, ctx.sampleRate);
+            const data = buf.getChannelData(0); for (let i = 0; i < bSize; i++) data[i] = Math.random() * 2 - 1;
+            const nSrc = ctx.createBufferSource(); nSrc.buffer = buf;
+            const nFilt = ctx.createBiquadFilter(); nFilt.type = 'highpass'; nFilt.frequency.value = 6000;
+            const nEnv = ctx.createGain(); nEnv.gain.setValueAtTime(0.4, time); nEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+            nSrc.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(masterGain); nSrc.start(time);
+        }
+        if (isCrash) {
+            const bSize = ctx.sampleRate * 1.5; const buf = ctx.createBuffer(1, bSize, ctx.sampleRate);
+            const data = buf.getChannelData(0); for (let i = 0; i < bSize; i++) data[i] = Math.random() * 2 - 1;
+            const nSrc = ctx.createBufferSource(); nSrc.buffer = buf;
+            const nFilt = ctx.createBiquadFilter(); nFilt.type = 'highpass'; nFilt.frequency.value = 4000;
+            const nEnv = ctx.createGain(); nEnv.gain.setValueAtTime(0.6, time); nEnv.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
+            nSrc.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(masterGain); nSrc.start(time);
+        }
+        if (isSub) {
+            const kOsc = ctx.createOscillator(); kOsc.type = 'sine'; kOsc.frequency.setValueAtTime(50, time);
+            const kEnv = ctx.createGain(); kEnv.gain.setValueAtTime(0.8, time); kEnv.gain.exponentialRampToValueAtTime(0.01, time + 0.6);
+            kOsc.connect(kEnv); kEnv.connect(masterGain); kOsc.start(time); kOsc.stop(time + 0.7);
+        }
+        }
 
         function playLayer(freq, time, rawConfig, layerIndex = 0) {
             const config = JSON.parse(JSON.stringify(rawConfig));
@@ -1940,7 +2125,13 @@
             vEnv.gain.linearRampToValueAtTime((0.6 / (layerIndex + 1)) * activeVol, time + config.att);
             vEnv.gain.exponentialRampToValueAtTime(0.001, time + config.att + config.rel);
 
-            vFilt.connect(vEnv); vEnv.connect(masterGain); vEnv.connect(vRevSend); vRevSend.connect(masterReverb);
+            const eqLow = ctx.createBiquadFilter(); eqLow.type = 'lowshelf'; eqLow.frequency.value = 250; eqLow.gain.value = config.eqLow || 0;
+            const eqMid = ctx.createBiquadFilter(); eqMid.type = 'peaking'; eqMid.frequency.value = 1000; eqMid.gain.value = config.eqMid || 0;
+            const eqHigh = ctx.createBiquadFilter(); eqHigh.type = 'highshelf'; eqHigh.frequency.value = 4000; eqHigh.gain.value = config.eqHigh || 0;
+            
+            vFilt.connect(eqLow); eqLow.connect(eqMid); eqMid.connect(eqHigh); eqHigh.connect(vEnv);
+            
+            vEnv.connect(masterGain); vEnv.connect(vRevSend); vRevSend.connect(masterReverb);
 
             if (config.del > 0.01) {
                 const delayNode = ctx.createDelay(5.0);
@@ -2039,15 +2230,15 @@
                 osc.frequency.setValueAtTime(freq, time);
                 const dist = ctx.createWaveShaper(); dist.curve = makeHardClipCurve(90);
                 vFilt.Q.value = 20;
-                vFilt.frequency.setValueAtTime(config.cut, time); 
+                vFilt.frequency.setValueAtTime(config.cut, time);
                 vFilt.frequency.exponentialRampToValueAtTime(100, time + 0.15);
                 vFilt.disconnect(vEnv); vFilt.connect(dist); dist.connect(vEnv);
                 osc.connect(vFilt); osc.start(time); osc.stop(time + config.att + config.rel);
             }
             else if (config.model === 'trance_supersaw') {
-                for(let i=0; i<7; i++) {
+                for (let i = 0; i < 7; i++) {
                     const o = ctx.createOscillator(); o.type = 'sawtooth';
-                    const detuneAmt = (i - 3) * 1.5; 
+                    const detuneAmt = (i - 3) * 1.5;
                     o.frequency.value = freq * (1 + (detuneAmt / 100));
                     o.connect(vFilt); o.start(time); o.stop(time + config.att + config.rel);
                 }
@@ -2060,7 +2251,7 @@
                 const modGain = ctx.createGain(); modGain.gain.setValueAtTime(freq * 5, time);
                 modGain.gain.exponentialRampToValueAtTime(1, time + 0.2);
                 mod.connect(modGain); modGain.connect(osc.frequency);
-                
+
                 const fold = ctx.createWaveShaper(); fold.curve = makeWavefoldCurve(3);
                 vFilt.disconnect(vEnv); vFilt.connect(fold); fold.connect(vEnv);
 
@@ -2112,17 +2303,17 @@
 
                 if (currentTab === 'tab-hybrid') {
                     const viewX = document.getElementById('hybrid-wrapper').scrollLeft || 0;
-                    
+
                     hybridCtx.fillStyle = '#000';
                     hybridCtx.fillRect(viewX, 0, 800, 400);
-                    
-                    seqImages.forEach((img, i) => {
+
+                    hybridImages.forEach((img, i) => {
                         const imgX = i * 800;
                         if (imgX + 800 > viewX && imgX < viewX + 800) {
                             hybridCtx.drawImage(img, imgX, 0, 800, 400);
                         }
                     });
-                    
+
                     hybridCtx.save();
                     hybridCtx.globalAlpha = parseFloat(document.getElementById('hybridOpacity').value || 0.5);
                     if (useFrontCam) { hybridCtx.translate(viewX + 800, 0); hybridCtx.scale(-1, 1); }
@@ -2148,13 +2339,13 @@
             const viewX = activeEnv.c.parentElement.scrollLeft || 0;
             const curFrame = activeEnv.ctx.getImageData(viewX, 0, 800, 400);
             const time = ctx.currentTime;
-            
+
             if (lastFrameData) {
                 const sensitivity = parseFloat(document.getElementById('camMotionSens')?.value) || 70;
-                
+
                 let motionGenreKey = deckState['B'].genre;
                 const gData = genres[motionGenreKey];
-                
+
                 const DEBOUNCE = 0.3;
 
                 activeEnv.ctx.save();
@@ -2172,10 +2363,10 @@
                             activeEnv.ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
                             activeEnv.ctx.lineWidth = 1.5;
                             activeEnv.ctx.stroke();
-                            
+
                             const basePos = Math.floor((x / 800) * gData.scale.length);
                             const activeInstruments = ['pad', 'lead', 'arp', 'sub', 'bass', 'chords'].filter(k => Mixer[k].checked);
-                            
+
                             if (activeInstruments.length > 0) {
                                 let zoneConfig = currentTab === 'tab-hybrid' ? document.getElementById('hybridZoneSelect').value : document.getElementById('camZoneSelect').value;
                                 let cols = 3, rows = 2;
@@ -2190,7 +2381,7 @@
 
                                 const instName = activeInstruments[zoneIndex % activeInstruments.length];
                                 const defaultOctaves = { pad: 0, lead: 1, arp: 2, sub: -2, bass: -1, chords: 0 };
-                                
+
                                 if (time - motionCooldowns[zoneIndex] > DEBOUNCE) {
                                     triggerInstrumentLayers(time, gData, instName, basePos, defaultOctaves[instName]);
                                     motionCooldowns[zoneIndex] = time;
@@ -2243,6 +2434,13 @@
                             gData.instruments[target].push(clone);
                             if (UI.instSel.value === target) renderLayers();
                         }
+                    }
+                    if ((currentBar === 5 || currentBar === 13) && step16 === 0 && Math.random() > 0.3) {
+                        aiGenerateDrum('hihat');
+                        if (Math.random() > 0.5) aiGenerateDrum('perc');
+                        if (Math.random() > 0.7) aiGenerateDrum('kick');
+                        if (Math.random() > 0.7) aiGenerateDrum('snare');
+                        showToast("🤖 AI Director auto-rearranged Rhythm Grid!");
                     }
                 }
 
@@ -2337,18 +2535,23 @@
         // --- TAB 1: IMAGE SCROLLER & REARRANGER ---
         function renderSeqImages() {
             seqCanvas.width = Math.max(800, seqImages.length * 800);
-            hybridCanvas.width = seqCanvas.width;
             seqCtx.fillStyle = '#000'; seqCtx.fillRect(0, 0, seqCanvas.width, seqCanvas.height);
             seqImages.forEach((img, i) => {
                 seqCtx.drawImage(img, i * 800, 0, 800, 400);
             });
-            renderThumbnails();
+            renderThumbnails(seqImages, 'thumb-container', renderSeqImages);
         }
 
-        function renderThumbnails() {
-            const container = document.getElementById('thumb-container');
+        // --- TAB 3: HYBRID ---
+        function renderHybridImages() {
+            hybridCanvas.width = Math.max(800, hybridImages.length * 800);
+            renderThumbnails(hybridImages, 'hybrid-thumb-container', renderHybridImages);
+        }
+
+        function renderThumbnails(arr, containerId, renderCallback) {
+            const container = document.getElementById(containerId);
             container.innerHTML = '';
-            seqImages.forEach((img, i) => {
+            arr.forEach((img, i) => {
                 const wrap = document.createElement('div');
                 wrap.style.cssText = "min-width: 120px; background:#111; border:1px solid #333; padding:5px; border-radius:4px; display:flex; flex-direction:column; gap:5px; align-items:center;";
 
@@ -2358,16 +2561,16 @@
                 const controls = document.createElement('div'); controls.style.display = "flex"; controls.style.gap = "5px"; controls.style.width = "100%";
 
                 const btnLeft = document.createElement('button'); btnLeft.innerText = "◀"; btnLeft.style.padding = "2px 5px"; btnLeft.style.flex = "1";
-                btnLeft.onclick = () => { moveImg(i, -1); };
+                btnLeft.onclick = () => { moveImg(arr, i, -1, renderCallback); };
 
                 const btnRight = document.createElement('button'); btnRight.innerText = "▶"; btnRight.style.padding = "2px 5px"; btnRight.style.flex = "1";
-                btnRight.onclick = () => { moveImg(i, 1); };
+                btnRight.onclick = () => { moveImg(arr, i, 1, renderCallback); };
 
                 const btnDel = document.createElement('button'); btnDel.innerText = "🗑"; btnDel.className = "btn-danger"; btnDel.style.padding = "2px 5px"; btnDel.style.flex = "1";
-                btnDel.onclick = () => { seqImages.splice(i, 1); renderSeqImages(); showToast("Image removed."); };
+                btnDel.onclick = () => { arr.splice(i, 1); renderCallback(); showToast("Image removed."); };
 
                 if (i === 0) btnLeft.disabled = true;
-                if (i === seqImages.length - 1) btnRight.disabled = true;
+                if (i === arr.length - 1) btnRight.disabled = true;
 
                 controls.append(btnLeft, btnDel, btnRight);
                 wrap.append(thumb, controls);
@@ -2375,15 +2578,15 @@
             });
         }
 
-        function moveImg(idx, direction) {
-            if (idx + direction < 0 || idx + direction >= seqImages.length) return;
-            const temp = seqImages[idx];
-            seqImages[idx] = seqImages[idx + direction];
-            seqImages[idx + direction] = temp;
-            renderSeqImages();
+        function moveImg(arr, idx, direction, renderCallback) {
+            if (idx + direction < 0 || idx + direction >= arr.length) return;
+            const temp = arr[idx];
+            arr[idx] = arr[idx + direction];
+            arr[idx + direction] = temp;
+            renderCallback();
         }
 
-        const handleImageUpload = (e) => {
+        const handleImageUpload = (arr, renderCallback) => (e) => {
             let loadedCount = 0;
             const files = Array.from(e.target.files);
             files.forEach(file => {
@@ -2391,9 +2594,9 @@
                 reader.onload = (event) => {
                     const img = new Image();
                     img.onload = () => {
-                        seqImages.push(img);
+                        arr.push(img);
                         loadedCount++;
-                        if (loadedCount === files.length) renderSeqImages();
+                        if (loadedCount === files.length) renderCallback();
                     };
                     img.src = event.target.result;
                 };
@@ -2401,28 +2604,30 @@
             });
             showToast("Images appended! Use arrows below to rearrange.");
         };
-        document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
-        document.getElementById('imageUploadHybrid').addEventListener('change', handleImageUpload);
+        
+        document.getElementById('imageUpload').addEventListener('change', handleImageUpload(seqImages, renderSeqImages));
+        document.getElementById('imageUploadHybrid').addEventListener('change', handleImageUpload(hybridImages, renderHybridImages));
 
-        const handleDuplicateImg = () => {
+        document.getElementById('duplicateImgBtn').addEventListener('click', () => {
             if (seqImages.length > 0) { seqImages.push(seqImages[seqImages.length - 1]); renderSeqImages(); showToast("Pattern duplicated."); }
-        };
-        document.getElementById('duplicateImgBtn').addEventListener('click', handleDuplicateImg);
-        document.getElementById('duplicateImgBtnHybrid').addEventListener('click', handleDuplicateImg);
+        });
+        document.getElementById('duplicateImgBtnHybrid').addEventListener('click', () => {
+            if (hybridImages.length > 0) { hybridImages.push(hybridImages[hybridImages.length - 1]); renderHybridImages(); showToast("Pattern duplicated."); }
+        });
 
-        const handleClearSeq = () => {
-            seqImages = []; renderSeqImages(); showToast("Timeline cleared.");
-        };
-        document.getElementById('clearSeqBtn').addEventListener('click', handleClearSeq);
-        document.getElementById('clearSeqBtnHybrid').addEventListener('click', handleClearSeq);
+        document.getElementById('clearSeqBtn').addEventListener('click', () => {
+            seqImages.length = 0; renderSeqImages(); showToast("Timeline cleared.");
+        });
+        document.getElementById('clearSeqBtnHybrid').addEventListener('click', () => {
+            hybridImages.length = 0; renderHybridImages(); showToast("Timeline cleared.");
+        });
 
-        const handleSaveSeq = () => {
-            const link = document.createElement('a');
-            link.download = `Synesthesia_Pattern_${Date.now()}.png`;
-            link.href = seqCanvas.toDataURL(); link.click();
-        };
-        document.getElementById('saveSeqBtn').addEventListener('click', handleSaveSeq);
-        document.getElementById('saveSeqBtnHybrid').addEventListener('click', handleSaveSeq);
+        document.getElementById('saveSeqBtn').addEventListener('click', () => {
+            const link = document.createElement('a'); link.download = `Synesthesia_Pattern_${Date.now()}.png`; link.href = seqCanvas.toDataURL(); link.click();
+        });
+        document.getElementById('saveSeqBtnHybrid').addEventListener('click', () => {
+            const link = document.createElement('a'); link.download = `Synesthesia_Hybrid_Pattern_${Date.now()}.png`; link.href = hybridCanvas.toDataURL(); link.click();
+        });
 
         // --- TAB 2: LIVE CAM ---
         async function startCameraSession() {
@@ -2577,6 +2782,7 @@
 
         document.getElementById('masterClearBtn').addEventListener('click', () => {
             seqImages = []; renderSeqImages();
+            hybridImages = []; renderHybridImages();
             drawCtx.fillStyle = '#000'; drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
             camCtx.fillStyle = '#000'; camCtx.fillRect(0, 0, camCanvas.width, camCanvas.height);
             if (typeof hybridCtx !== 'undefined') { hybridCtx.fillStyle = '#000'; hybridCtx.fillRect(0, 0, hybridCanvas.width, hybridCanvas.height); }
@@ -2591,6 +2797,10 @@
                 if (slider) slider.value = 0;
             });
             Object.keys(mixTracks).forEach(id => removeMixTrack(id));
+            loadRhythmPreset('clear');
+            if (window.remixAudioSource) { window.remixAudioSource.stop(); window.remixAudioSource = null; }
+            const rStat = document.getElementById('remixStatus');
+            if (rStat) rStat.innerText = 'No track loaded.';
             showToast("Master Reset Complete. All settings cleared.");
         });
 
@@ -2615,12 +2825,20 @@
             if (!isRecording) {
                 initAudio();
                 const stream = new MediaStream([...getActiveCanvas().c.captureStream(30).getTracks(), ...mediaDest.stream.getTracks()]);
-                recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                
+                // Let the browser choose its preferred native format, or use mp4 if supported
+                let mime = '';
+                if (MediaRecorder.isTypeSupported('video/mp4')) mime = 'video/mp4';
+                else if (MediaRecorder.isTypeSupported('video/webm')) mime = 'video/webm';
+                
+                recorder = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
                 chunks = []; recorder.ondataavailable = ev => chunks.push(ev.data);
                 recorder.onstop = () => {
-                    const url = URL.createObjectURL(new Blob(chunks, { type: 'video/webm' }));
+                    const finalMime = recorder.mimeType || 'video/mp4';
+                    const ext = finalMime.includes('mp4') ? 'mp4' : 'webm';
+                    const url = URL.createObjectURL(new Blob(chunks, { type: finalMime }));
                     const a = document.getElementById('downloadLink');
-                    a.href = url; a.download = `Synesthesia_Global_${Date.now()}.webm`; a.style.display = 'inline-block';
+                    a.href = url; a.download = `Synesthesia_Global_${Date.now()}.${ext}`; a.style.display = 'inline-block';
                 };
                 recorder.start(); isRecording = true;
                 e.target.innerText = "⏹ Stop Master Rec"; e.target.classList.add('recording');
@@ -2633,9 +2851,252 @@
             }
         });
 
+        // --- AI VOICE SYNTHESIS ---
+        document.getElementById('genAiVoiceBtn').addEventListener('click', async () => {
+            const text = document.getElementById('aiVoiceText').value;
+            if (!text) { showToast("Please enter some text!"); return; }
+            showToast("Synthesizing AI Voice...");
+            
+            const pitchStr = document.getElementById('aiVoicePitch').value;
+            let voice = "Brian";
+            if (pitchStr === "0.5") voice = "Justin";
+            if (pitchStr === "1.5") voice = "Ivy";
+            
+            try {
+                let url = `https://api.streamelements.com/kappa/v2/speech?voice=${voice}&text=${encodeURIComponent(text)}`;
+                let res = await fetch(url).catch(() => null);
+                
+                if (!res || !res.ok) {
+                    console.warn("Primary TTS failed, falling back to secondary...");
+                    let tl = "en-US";
+                    if (pitchStr === "0.5") tl = "en-GB";
+                    if (pitchStr === "1.5") tl = "en-AU";
+                    url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${tl}&client=tw-ob&q=${encodeURIComponent(text)}`;
+                    res = await fetch(url);
+                }
+
+                if (!res || !res.ok) throw new Error("All TTS APIs failed.");
+                
+                const blob = await res.blob();
+                addMixTrack(blob, `AI Voice: "${text.substring(0, 15)}..."`);
+                showToast("AI Voice Added to Mix!");
+            } catch (err) {
+                console.warn(err);
+                showToast("TTS API failed. Please disable your Adblocker or check connection.");
+            }
+        });
+
+        // --- GENRE REMIXER LOGIC ---
+        let remixAudioBuffer = null;
+        let remixSourceNode = null;
+        let remixFilterNode = null;
+        let remixGainNode = null;
+        let remixSyncOffset = 0;
+
+
+
+        document.getElementById('remixUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            initAudio();
+            document.getElementById('remixStatus').innerText = `Decoding ${file.name}...`;
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                remixAudioBuffer = await ctx.decodeAudioData(arrayBuffer);
+                
+                // Auto BPM Detection
+                document.getElementById('remixStatus').innerText = `Analyzing BPM for ${file.name}...`;
+                const offlineCtx = new OfflineAudioContext(1, remixAudioBuffer.length, remixAudioBuffer.sampleRate);
+                const source = offlineCtx.createBufferSource();
+                source.buffer = remixAudioBuffer;
+                const filter = offlineCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 150;
+                source.connect(filter);
+                filter.connect(offlineCtx.destination);
+                source.start(0);
+                
+                const renderedBuffer = await offlineCtx.startRendering();
+                const data = renderedBuffer.getChannelData(0);
+                let max = 0; for (let i = 0; i < data.length; i++) if (Math.abs(data[i]) > max) max = Math.abs(data[i]);
+                let threshold = max * 0.8;
+                let peaks = [];
+                for (let i = 0; i < data.length; i++) {
+                    if (Math.abs(data[i]) > threshold) {
+                        peaks.push(i);
+                        i += remixAudioBuffer.sampleRate / 4;
+                    }
+                }
+                let guessedBpm = 120;
+                if (peaks.length >= 2) {
+                    let intervals = {};
+                    for (let i = 1; i < peaks.length; i++) {
+                        let interval = (peaks[i] - peaks[i-1]) / remixAudioBuffer.sampleRate;
+                        let bpm = Math.round(60 / interval);
+                        while (bpm < 70) bpm *= 2;
+                        while (bpm > 180) bpm /= 2;
+                        bpm = Math.round(bpm);
+                        intervals[bpm] = (intervals[bpm] || 0) + 1;
+                    }
+                    let maxCount = 0;
+                    for (let b in intervals) {
+                        if (intervals[b] > maxCount) {
+                            maxCount = intervals[b];
+                            guessedBpm = parseInt(b);
+                        }
+                    }
+                }
+                
+                document.getElementById('remixBpm').value = guessedBpm;
+                
+                let suggestion = "Mid-Tempo / Reggaeton";
+                let recStyle = "reggaeton";
+                if (guessedBpm < 95) { suggestion = "Hip-Hop / Lo-Fi"; recStyle = "hiphop_boombap"; }
+                else if (guessedBpm >= 115 && guessedBpm <= 130) { suggestion = "House / Deep House"; recStyle = "house_deep"; }
+                else if (guessedBpm > 130 && guessedBpm <= 145) { suggestion = "Trance / Hard Techno"; recStyle = "hard_techno"; }
+                else if (guessedBpm > 145) { suggestion = "Drum & Bass / Dubstep"; recStyle = "dnb"; }
+                
+                const suggDiv = document.getElementById('remixBpmSuggestion');
+                if(suggDiv) suggDiv.innerText = `Detected ~${guessedBpm} BPM. Recommended: ${suggestion}`;
+                document.getElementById('remixTargetGenre').value = recStyle;
+
+                document.getElementById('remixStatus').innerText = `Track loaded: ${file.name} (${remixAudioBuffer.duration.toFixed(1)}s). Ready to remix!`;
+            } catch (err) {
+                console.error(err);
+                document.getElementById('remixStatus').innerText = `Failed to decode track. Try another format.`;
+            }
+        });
+
+        document.getElementById('remixPlayBtn').addEventListener('click', (e) => {
+            initAudio();
+            if (!remixAudioBuffer) { showToast("Load a track first!"); return; }
+            
+            if (remixSourceNode) {
+                try { remixSourceNode.stop(); } catch(e){}
+                remixSourceNode.disconnect();
+                remixSourceNode = null;
+                e.target.innerText = "▶ Play Remix Mashup";
+                document.getElementById('stopBtn').click(); // Stop orchestrator
+                return;
+            }
+
+            // Start orchestrator
+            const targetGenre = document.getElementById('remixTargetGenre').value;
+            deckState['A'].genre = targetGenre;
+            UI.genreSel.value = targetGenre;
+            loadGenre();
+            
+            const targetBpm = parseFloat(document.getElementById('remixBpm').value) || 120;
+            UI.bpm.value = targetBpm;
+            document.getElementById('bpmVal').innerText = targetBpm;
+            
+            if (!isPlaying) {
+                document.getElementById('playBtn').click();
+            }
+
+            // Play the uploaded track
+            remixSourceNode = ctx.createBufferSource();
+            remixSourceNode.buffer = remixAudioBuffer;
+            
+            remixFilterNode = ctx.createBiquadFilter();
+            const filterType = document.getElementById('remixFilter').value;
+            if (filterType === 'lowpass') { remixFilterNode.type = 'lowpass'; remixFilterNode.frequency.value = 500; }
+            else if (filterType === 'highpass') { remixFilterNode.type = 'highpass'; remixFilterNode.frequency.value = 1000; }
+            else if (filterType === 'bandpass') { remixFilterNode.type = 'bandpass'; remixFilterNode.frequency.value = 1200; remixFilterNode.Q.value = 1.5; }
+            else { remixFilterNode.type = 'allpass'; }
+
+            remixGainNode = ctx.createGain();
+            remixGainNode.gain.value = parseFloat(document.getElementById('remixVol').value);
+
+            remixSourceNode.connect(remixFilterNode);
+            remixFilterNode.connect(remixGainNode);
+            remixGainNode.connect(masterGain);
+
+            remixSourceNode.start(ctx.currentTime + remixSyncOffset);
+            e.target.innerText = "⏹ Stop Remix Mashup";
+
+            remixSourceNode.onended = () => {
+                if (remixSourceNode) {
+                    remixSourceNode = null;
+                    e.target.innerText = "▶ Play Remix Mashup";
+                }
+            };
+        });
+
+        document.getElementById('remixVol').addEventListener('input', (e) => {
+            if (remixGainNode) remixGainNode.gain.value = parseFloat(e.target.value);
+        });
+        document.getElementById('remixFilter').addEventListener('change', (e) => {
+            if (remixFilterNode) {
+                const filterType = e.target.value;
+                if (filterType === 'lowpass') { remixFilterNode.type = 'lowpass'; remixFilterNode.frequency.value = 500; remixFilterNode.Q.value = 1; }
+                else if (filterType === 'highpass') { remixFilterNode.type = 'highpass'; remixFilterNode.frequency.value = 1000; remixFilterNode.Q.value = 1; }
+                else if (filterType === 'bandpass') { remixFilterNode.type = 'bandpass'; remixFilterNode.frequency.value = 1200; remixFilterNode.Q.value = 1.5; }
+                else { remixFilterNode.type = 'allpass'; }
+            }
+        });
+        document.getElementById('remixSyncUpBtn').addEventListener('click', () => { remixSyncOffset += 0.05; showToast(`Sync: +${remixSyncOffset.toFixed(2)}s`); });
+        document.getElementById('remixSyncDownBtn').addEventListener('click', () => { remixSyncOffset -= 0.05; showToast(`Sync: ${remixSyncOffset.toFixed(2)}s`); });
+
+
         seqCtx.fillStyle = '#000'; seqCtx.fillRect(0, 0, 800, 400);
         drawCtx.fillStyle = '#000'; drawCtx.fillRect(0, 0, 800, 400);
         camCtx.fillStyle = '#000'; camCtx.fillRect(0, 0, 800, 400);
+
+        // --- PRESET LOOPS ---
+        function loadRhythmPreset(type) {
+            if (!type) return;
+            const g = genres[UI.genreSel.value];
+            if (!g) return;
+            
+            const clear = () => {
+                g.rhythm.kick = new Array(16).fill(0); g.rhythm.snare = new Array(16).fill(0);
+                g.rhythm.hihat = new Array(16).fill(0); g.rhythm.perc = new Array(16).fill(0);
+                g.rhythm.clap = new Array(16).fill(0); g.rhythm.open_hat = new Array(16).fill(0);
+                g.rhythm.crash = new Array(16).fill(0); g.rhythm.sub = new Array(16).fill(0);
+            };
+            clear();
+            
+            if (type === 'clear') {
+                loadRhythmToUI();
+                showToast("Rhythm Grid cleared (Stopped).");
+                return;
+            }
+            
+            if (type === 'house') {
+                for(let i=0; i<16; i+=4) { g.rhythm.kick[i]=1; g.rhythm.open_hat[i+2]=1; }
+                for(let i=4; i<16; i+=8) { g.rhythm.clap[i]=1; }
+            } else if (type === 'trap') {
+                g.rhythm.kick[0]=1; g.rhythm.kick[8]=1; g.rhythm.kick[11]=1;
+                g.rhythm.snare[4]=1; g.rhythm.snare[12]=1;
+                for(let i=0; i<16; i++) { if(i%2===0 || i===14 || i===15) g.rhythm.hihat[i]=1; }
+                g.rhythm.sub[0]=1; g.rhythm.sub[8]=1;
+            } else if (type === 'dnb') {
+                g.rhythm.kick[0]=1; g.rhythm.kick[10]=1;
+                g.rhythm.snare[4]=1; g.rhythm.snare[12]=1;
+                for(let i=0; i<16; i+=2) { g.rhythm.hihat[i]=1; }
+            } else if (type === 'breakbeat') {
+                g.rhythm.kick[0]=1; g.rhythm.kick[6]=1; g.rhythm.kick[11]=1;
+                g.rhythm.snare[4]=1; g.rhythm.snare[12]=1; g.rhythm.perc[10]=1;
+                for(let i=0; i<16; i+=2) { g.rhythm.hihat[i]=1; }
+            } else if (type === 'rock') {
+                g.rhythm.kick[0]=1; g.rhythm.kick[8]=1;
+                g.rhythm.snare[4]=1; g.rhythm.snare[12]=1;
+                for(let i=0; i<16; i+=2) { g.rhythm.hihat[i]=1; }
+                g.rhythm.crash[0]=1;
+            }
+            loadRhythmToUI();
+            showToast("Loaded preset: " + type);
+        }
+
+        // --- INJECT PER-TAB CONTROLS ---
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            const btnDiv = document.createElement('div');
+            btnDiv.style = "display:flex; gap:10px; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;";
+            btnDiv.innerHTML = `<button class="btn-primary" style="flex:1" onclick="document.getElementById('playBtn').click()">▶ PLAY AUDIO ENGINE</button>
+                                <button class="btn-secondary" style="flex:1" onclick="document.getElementById('stopBtn').click()">⏹ STOP AUDIO</button>`;
+            tab.insertBefore(btnDiv, tab.firstChild);
+        });
 
         requestAnimationFrame(drawVisualizerLoop);
     </script>
