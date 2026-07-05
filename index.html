@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synesthesia Studio v11: AI Orchestrator & Macro-Sequencer</title>
+    <link rel="icon" href="data:," />
     <style>
         :root {
             --neon: #00ffcc;
@@ -935,10 +936,42 @@
                         </div>
                     </div>
                 </div>
-                
-                <div style="margin-top: 15px; background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
-                    <div id="composer-grid" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px; max-height: 400px;">
-                        <!-- JS will populate rows and columns here -->
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: var(--neon); font-family: monospace;">🎹 LEAD MELODY</h4>
+                        <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                            <div id="composer-grid-lead" class="composer-grid-container" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: #ffff00; font-family: monospace;">🎹 ARPEGGIATOR</h4>
+                        <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                            <div id="composer-grid-arp" class="composer-grid-container" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: #ff00ff; font-family: monospace;">🎹 CHORDS</h4>
+                        <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                            <div id="composer-grid-chords" class="composer-grid-container" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: #ffaa00; font-family: monospace;">🎹 ATMOSPHERIC PAD</h4>
+                        <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                            <div id="composer-grid-pad" class="composer-grid-container" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: #00ffff; font-family: monospace;">🎹 BASSLINE</h4>
+                        <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                            <div id="composer-grid-bass" class="composer-grid-container" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: #ff3366; font-family: monospace;">🎹 SUB BASS</h4>
+                        <div style="background: #000; border: 1px solid #333; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                            <div id="composer-grid-sub" class="composer-grid-container" style="display: grid; grid-template-columns: 40px repeat(16, 1fr); gap: 2px; min-width: 800px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>            <div class="header-bar"
@@ -1170,9 +1203,15 @@
             <p id="infoDesc" style="color: #ccc; margin-bottom: 20px;">Description.</p>
 
             <div class="status-box">
-                <h3
-                    style="font-size: 0.95rem; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 5px; color: var(--neon-secondary);">
-                    16-Bar Macro Architecture</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 5px;">
+                    <h3 style="font-size: 0.95rem; margin-top: 0; margin-bottom: 0; color: var(--neon-secondary);">Macro Architecture</h3>
+                    <select id="macroArchSelect" style="background: #111; color: var(--neon); border: 1px solid #333; border-radius: 4px; padding: 2px 5px; font-size: 0.8rem;">
+                        <option value="8">8-Bar</option>
+                        <option value="16" selected>16-Bar</option>
+                        <option value="32">32-Bar</option>
+                        <option value="64">64-Bar</option>
+                    </select>
+                </div>
                 <p style="margin: 5px 0; font-family: monospace;">Current Bar: <span id="barCount"
                         style="color: #fff; font-weight: bold; font-size: 1.2rem;">1 / 16</span></p>
                 <p style="margin: 5px 0; font-family: monospace;">Harmony Phase: <span id="chordDisplay"
@@ -1678,6 +1717,15 @@
             if (!(UI.aiDir.checked && UI.aiTempo.checked)) {
                 document.getElementById('bpmVal').innerText = e.target.value;
             }
+        });
+
+        document.getElementById('macroArchSelect')?.addEventListener('change', (e) => {
+            let archBars = parseInt(e.target.value);
+            document.getElementById('barCount').innerText = `1 / ${archBars}`;
+            globalStep = 0;
+            document.getElementById('arrFill').style.width = `0%`;
+            document.getElementById('macroDisplay').innerText = `0%`;
+            showToast(`${archBars}-Bar Architecture Selected. Sequence Restarted.`);
         });
 
         buildRhythmGrid(); loadGenre();
@@ -2347,11 +2395,14 @@
                     hybridCtx.fillStyle = '#000';
                     hybridCtx.fillRect(viewX, 0, 800, 400);
 
+                    let currentX = 0;
                     hybridImages.forEach((img, i) => {
-                        const imgX = i * 800;
-                        if (imgX + 800 > viewX && imgX < viewX + 800) {
-                            hybridCtx.drawImage(img, imgX, 0, 800, 400);
+                        const aspect = img.width / img.height;
+                        const w = Math.floor(400 * aspect);
+                        if (currentX + w > viewX && currentX < viewX + 800) {
+                            hybridCtx.drawImage(img, currentX, 0, w, 400);
                         }
+                        currentX += w;
                     });
 
                     hybridCtx.save();
@@ -2440,8 +2491,11 @@
             const time = ctx.currentTime; const gData = genres[deckState['A'].genre];
             const activeEnv = getActiveCanvas();
 
+            let archBars = parseInt(document.getElementById('macroArchSelect')?.value || "16");
+            let archSteps = archBars * 16;
+            
             let step16 = globalStep % 16;
-            currentBar = Math.floor((globalStep % 256) / 16) + 1;
+            currentBar = Math.floor((globalStep % archSteps) / 16) + 1;
             let isTurnaround = false;
 
             const STEPS_PER_IMAGE = 128;
@@ -2484,7 +2538,7 @@
                     }
                 }
 
-                macroFilterMod = (globalStep % 256) / 256;
+                macroFilterMod = (globalStep % archSteps) / archSteps;
 
                 if (eqFilters.length > 0) {
                     eqFilters.forEach((filter, idx) => {
@@ -2512,7 +2566,7 @@
                 macroFilterMod = 0.5;
             }
 
-            document.getElementById('barCount').innerText = `${currentBar} / 16`;
+            document.getElementById('barCount').innerText = `${currentBar} / ${archBars}`;
             document.getElementById('arrFill').style.width = `${macroFilterMod * 100}%`;
             document.getElementById('macroDisplay').innerText = `${Math.floor(macroFilterMod * 100)}%`;
 
@@ -2569,24 +2623,27 @@
             }
 
             if (currentTab === 'tab-composer') {
-                const notesToPlay = [];
+                const notesToPlay = { lead: [], arp: [], chords: [], pad: [], bass: [], sub: [] };
+                
                 for (let note = 0; note < 7; note++) {
-                    if (composerGrid[step16][note]) {
-                        notesToPlay.push(note);
+                    if (typeof composerGrids !== 'undefined') {
+                        ['lead', 'arp', 'chords', 'pad', 'bass', 'sub'].forEach(type => {
+                            if (composerGrids[type] && composerGrids[type][step16][note]) {
+                                notesToPlay[type].push(note);
+                            }
+                        });
                     }
                 }
                 
                 document.querySelectorAll('.composer-cell').forEach(c => c.style.border = '1px solid #333');
                 document.querySelectorAll(`.composer-cell[data-step="${step16}"]`).forEach(c => c.style.border = '1px solid #fff');
                 
-                if (notesToPlay.length > 0) {
-                    if (Mixer.lead.checked) {
-                        notesToPlay.forEach(n => triggerInstrumentLayers(time, gData, 'lead', n, 1));
-                    }
-                    if (Mixer.bass.checked) {
-                        triggerInstrumentLayers(time, gData, 'bass', notesToPlay[0], -1);
-                    }
-                }
+                if (Mixer.lead.checked) notesToPlay.lead.forEach(n => triggerInstrumentLayers(time, gData, 'lead', n, 1));
+                if (Mixer.arp.checked) notesToPlay.arp.forEach(n => triggerInstrumentLayers(time, gData, 'arp', n, 2));
+                if (Mixer.chords.checked) notesToPlay.chords.forEach(n => triggerInstrumentLayers(time, gData, 'chords', n, 0));
+                if (Mixer.pad.checked) notesToPlay.pad.forEach(n => triggerInstrumentLayers(time, gData, 'pad', n, 0));
+                if (Mixer.bass.checked) notesToPlay.bass.forEach(n => triggerInstrumentLayers(time, gData, 'bass', n, -1));
+                if (Mixer.sub.checked) notesToPlay.sub.forEach(n => triggerInstrumentLayers(time, gData, 'sub', n, -2));
             }
 
             globalStep++;
@@ -2595,17 +2652,32 @@
 
         // --- TAB 1: IMAGE SCROLLER & REARRANGER ---
         function renderSeqImages() {
-            seqCanvas.width = Math.max(800, seqImages.length * 800);
-            seqCtx.fillStyle = '#000'; seqCtx.fillRect(0, 0, seqCanvas.width, seqCanvas.height);
-            seqImages.forEach((img, i) => {
-                seqCtx.drawImage(img, i * 800, 0, 800, 400);
+            let totalWidth = 0;
+            const imgData = seqImages.map(img => {
+                const aspect = img.width / img.height;
+                const scaledWidth = Math.max(10, Math.floor(400 * aspect));
+                const data = { img, x: totalWidth, w: scaledWidth };
+                totalWidth += scaledWidth;
+                return data;
+            });
+
+            seqCanvas.width = Math.max(800, totalWidth);
+            seqCtx.fillStyle = '#000'; seqCtx.fillRect(0, 0, seqCanvas.width, 400);
+            
+            imgData.forEach(d => {
+                seqCtx.drawImage(d.img, d.x, 0, d.w, 400);
             });
             renderThumbnails(seqImages, 'thumb-container', renderSeqImages);
         }
 
         // --- TAB 3: HYBRID ---
         function renderHybridImages() {
-            hybridCanvas.width = Math.max(800, hybridImages.length * 800);
+            let totalWidth = 0;
+            hybridImages.forEach(img => {
+                const aspect = img.width / img.height;
+                totalWidth += Math.floor(400 * aspect);
+            });
+            hybridCanvas.width = Math.max(800, totalWidth);
             renderThumbnails(hybridImages, 'hybrid-thumb-container', renderHybridImages);
         }
 
@@ -2860,7 +2932,11 @@
             Object.keys(mixTracks).forEach(id => removeMixTrack(id));
             loadRhythmPreset('clear');
             if (typeof initComposerGrid === 'function') {
-                composerGrid = Array(16).fill().map(() => Array(7).fill(false));
+                composerGrids = {
+                    lead: Array(16).fill().map(() => Array(7).fill(false)),
+                    chords: Array(16).fill().map(() => Array(7).fill(false)),
+                    bass: Array(16).fill().map(() => Array(7).fill(false))
+                };
                 initComposerGrid();
             }
             if (window.remixAudioSource) { window.remixAudioSource.stop(); window.remixAudioSource = null; }
@@ -3163,43 +3239,62 @@
             tab.insertBefore(btnDiv, tab.firstChild);
         });
 
-        let composerGrid = Array(16).fill().map(() => Array(7).fill(false)); // [step][note]
+        let composerGrids = {
+            lead: Array(16).fill().map(() => Array(7).fill(false)),
+            arp: Array(16).fill().map(() => Array(7).fill(false)),
+            chords: Array(16).fill().map(() => Array(7).fill(false)),
+            pad: Array(16).fill().map(() => Array(7).fill(false)),
+            bass: Array(16).fill().map(() => Array(7).fill(false)),
+            sub: Array(16).fill().map(() => Array(7).fill(false))
+        };
         
         function initComposerGrid() {
-            const container = document.getElementById('composer-grid');
-            if (!container) return;
-            container.innerHTML = '';
-            
-            for (let note = 6; note >= 0; note--) {
-                const label = document.createElement('div');
-                label.style.cssText = "color: #888; font-size: 10px; display:flex; align-items:center; justify-content:flex-end; padding-right:5px;";
-                label.innerText = `N${note+1}`;
-                container.appendChild(label);
+            const typeColors = {
+                'lead': 'var(--neon)',
+                'arp': '#ffff00',
+                'chords': '#ff00ff',
+                'pad': '#ffaa00',
+                'bass': '#00ffff',
+                'sub': '#ff3366'
+            };
+            ['lead', 'arp', 'chords', 'pad', 'bass', 'sub'].forEach(type => {
+                const container = document.getElementById(`composer-grid-${type}`);
+                if (!container) return;
+                container.innerHTML = '';
                 
-                for (let step = 0; step < 16; step++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'composer-cell';
-                    cell.dataset.step = step;
-                    cell.dataset.note = note;
+                for (let note = 6; note >= 0; note--) {
+                    const label = document.createElement('div');
+                    label.style.cssText = "color: #888; font-size: 10px; display:flex; align-items:center; justify-content:flex-end; padding-right:5px;";
+                    label.innerText = `N${note+1}`;
+                    container.appendChild(label);
                     
-                    cell.style.cssText = `
-                        background: #111; 
-                        border: 1px solid #333; 
-                        height: 30px; 
-                        cursor: pointer;
-                        border-radius: 2px;
-                    `;
-                    if (step % 4 === 0) cell.style.borderLeft = "2px solid #555";
-                    if (composerGrid[step][note]) cell.style.background = 'var(--neon)';
-                    
-                    cell.onclick = () => {
-                        composerGrid[step][note] = !composerGrid[step][note];
-                        cell.style.background = composerGrid[step][note] ? 'var(--neon)' : '#111';
-                    };
-                    
-                    container.appendChild(cell);
+                    for (let step = 0; step < 16; step++) {
+                        const cell = document.createElement('div');
+                        cell.className = `composer-cell composer-cell-${type}`;
+                        cell.dataset.step = step;
+                        cell.dataset.note = note;
+                        
+                        cell.style.cssText = `
+                            background: #111; 
+                            border: 1px solid #333; 
+                            height: 30px; 
+                            cursor: pointer;
+                            border-radius: 2px;
+                        `;
+                        if (step % 4 === 0) cell.style.borderLeft = "2px solid #555";
+                        
+                        let activeColor = typeColors[type];
+                        if (composerGrids[type][step][note]) cell.style.background = activeColor;
+                        
+                        cell.onclick = () => {
+                            composerGrids[type][step][note] = !composerGrids[type][step][note];
+                            cell.style.background = composerGrids[type][step][note] ? activeColor : '#111';
+                        };
+                        
+                        container.appendChild(cell);
+                    }
                 }
-            }
+            });
         }
         initComposerGrid();
 
@@ -3242,7 +3337,11 @@
             Mixer.drums.checked = true;
 
             // Euclidean Call and Response Engine
-            composerGrid = Array(16).fill().map(() => Array(7).fill(false));
+            composerGrids = {
+                lead: Array(16).fill().map(() => Array(7).fill(false)),
+                chords: Array(16).fill().map(() => Array(7).fill(false)),
+                bass: Array(16).fill().map(() => Array(7).fill(false))
+            };
             
             let density = 0.4; // House
             if (gName.includes('techno') || gName.includes('trance')) density = 0.7; // Fast/Dense
@@ -3262,12 +3361,11 @@
                 }
             }
 
-            // Generate "Call" Motif (Bars 1 and 2, Steps 0-7)
+            // 1. Generate "Lead" Motif (Bars 1 and 2, Steps 0-7)
             let callMotif = [];
             let currentNote = Math.floor(Math.random() * 7);
             for(let i=0; i<8; i++) {
                 if(euclideanRhythm[i]) {
-                    // Random walk with gravity towards center (note 3)
                     let jump = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 3));
                     if (currentNote > 4) jump -= 1; 
                     if (currentNote < 2) jump += 1;
@@ -3277,49 +3375,98 @@
                     if(currentNote > 6) currentNote = 6;
                     
                     callMotif.push(currentNote);
-                    composerGrid[i][currentNote] = true;
+                    composerGrids.lead[i][currentNote] = true;
                 } else {
                     callMotif.push(-1);
                 }
             }
 
-            // Generate "Response" Motif (Bars 3 and 4, Steps 8-15)
-            // 3 Types of algebraic manipulation: Inversion, Shift, or Exact Copy
+            // 1b. Generate Lead "Response" Motif (Bars 3 and 4, Steps 8-15)
             const responseType = Math.random();
-            let shiftAmount = Math.floor(Math.random() * 3) - 1; // -1, 0, 1
-
+            let shiftAmount = Math.floor(Math.random() * 3) - 1;
             for(let i=0; i<8; i++) {
                 let note = callMotif[i];
                 if(note !== -1) {
-                    if (responseType < 0.33) {
-                        // Inversion around center note 3
-                        note = 3 + (3 - note); 
-                    } else if (responseType < 0.66) {
-                        // Pitch shift
-                        note += shiftAmount;
-                    } 
-                    // else exact copy
-
-                    // Resolve final note to root (0) or 5th (4) for a musical ending
-                    if (i === 7 || (i === 6 && callMotif[7] === -1)) {
-                        note = Math.random() > 0.5 ? 0 : 4;
-                    }
-
+                    if (responseType < 0.33) note = 3 + (3 - note); // Inversion
+                    else if (responseType < 0.66) note += shiftAmount; // Shift
+                    if (i === 7 || (i === 6 && callMotif[7] === -1)) note = Math.random() > 0.5 ? 0 : 4; // Resolve
+                    
                     if(note < 0) note = 0;
                     if(note > 6) note = 6;
                     
-                    composerGrid[i+8][note] = true;
+                    composerGrids.lead[i+8][note] = true;
+                }
+            }
+            
+            // 2. Generate "Bassline"
+            // Bass usually plays root (0) or 5th (4) on strong beats or syncopated offbeats
+            for(let i=0; i<16; i++) {
+                if (i % 4 === 0 || (i % 2 === 0 && Math.random() > 0.5)) {
+                    composerGrids.bass[i][Math.random() > 0.8 ? 4 : 0] = true;
+                } else if (gName.includes('techno') && i % 4 === 2) { 
+                    // classic offbeat techno bass
+                    composerGrids.bass[i][0] = true;
+                } else if (gName.includes('trap') && i % 4 === 3 && Math.random() > 0.5) {
+                    // trap syncopation
+                    composerGrids.bass[i][0] = true;
+                }
+            }
+            
+            // 3. Generate "Chords"
+            // Triads on the 1st beat of every bar, occasionally on beat 3
+            for(let i=0; i<16; i+=2) {
+                if (i % 4 === 0 || Math.random() > 0.7) {
+                    let root = Math.random() > 0.7 ? 4 : (Math.random() > 0.5 ? 2 : 0);
+                    composerGrids.chords[i][root] = true;
+                    if(root + 2 < 7) composerGrids.chords[i][root + 2] = true;
+                    if(root + 4 < 7) composerGrids.chords[i][root + 4] = true;
+                }
+            }
+            
+            // 4. Generate "Arp"
+            // Fast ascending/descending notes
+            let arpNote = 0; let arpDir = Math.random() > 0.5 ? 1 : -1;
+            for(let i=0; i<16; i++) {
+                if (Math.random() > 0.2) {
+                    composerGrids.arp[i][arpNote] = true;
+                    arpNote += arpDir;
+                    if (arpNote > 6) { arpNote = 5; arpDir = -1; }
+                    if (arpNote < 0) { arpNote = 1; arpDir = 1; }
+                }
+            }
+
+            // 5. Generate "Pad"
+            // Long sustained chords every 8 steps
+            for(let i=0; i<16; i+=8) {
+                let root = Math.random() > 0.5 ? 0 : 2;
+                composerGrids.pad[i][root] = true;
+                if(root + 2 < 7) composerGrids.pad[i][root + 2] = true;
+                if(root + 4 < 7) composerGrids.pad[i][root + 4] = true;
+            }
+
+            // 6. Generate "Sub"
+            // Mirrors the rhythmic pulse of the bassline but strictly root notes
+            for(let i=0; i<16; i++) {
+                if (composerGrids.bass[i].some(val => val === true)) {
+                    composerGrids.sub[i][0] = true;
                 }
             }
             
             initComposerGrid();
-            showToast("AI created a Euclidean Call-and-Response pattern for " + document.getElementById('aiComposerGenre').options[document.getElementById('aiComposerGenre').selectedIndex].text + "!");
+            showToast("AI created a multi-layer orchestration for " + document.getElementById('aiComposerGenre').options[document.getElementById('aiComposerGenre').selectedIndex].text + "!");
         });
 
         document.getElementById('clearComposerBtn')?.addEventListener('click', () => {
-            composerGrid = Array(16).fill().map(() => Array(7).fill(false));
+            composerGrids = {
+                lead: Array(16).fill().map(() => Array(7).fill(false)),
+                arp: Array(16).fill().map(() => Array(7).fill(false)),
+                chords: Array(16).fill().map(() => Array(7).fill(false)),
+                pad: Array(16).fill().map(() => Array(7).fill(false)),
+                bass: Array(16).fill().map(() => Array(7).fill(false)),
+                sub: Array(16).fill().map(() => Array(7).fill(false))
+            };
             initComposerGrid();
-            showToast("Composer Grid cleared.");
+            showToast("All Composer Grids cleared.");
         });
 
         function applyUniversalTooltips() {
