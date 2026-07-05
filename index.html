@@ -3339,8 +3339,11 @@
             // Euclidean Call and Response Engine
             composerGrids = {
                 lead: Array(16).fill().map(() => Array(7).fill(false)),
+                arp: Array(16).fill().map(() => Array(7).fill(false)),
                 chords: Array(16).fill().map(() => Array(7).fill(false)),
-                bass: Array(16).fill().map(() => Array(7).fill(false))
+                pad: Array(16).fill().map(() => Array(7).fill(false)),
+                bass: Array(16).fill().map(() => Array(7).fill(false)),
+                sub: Array(16).fill().map(() => Array(7).fill(false))
             };
             
             let density = 0.4; // House
